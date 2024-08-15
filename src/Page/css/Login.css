@@ -1,0 +1,108 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f4e04d;
+  }
+  
+  .logo {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .logo-image {
+    width: 100px; /* Adjust the size according to your logo */
+  }
+  
+  .logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .login-form {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .login-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .password-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .password-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  
+  .login-button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .login-options {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
+  .login-options a {
+    color: #555;
+    text-decoration: none;
+  }
+  
+  .social-login {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .social-button {
+    width: 250px;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .social-button.google {
+    background-color: white;
+    color: #4285F4;
+    border: 1px solid #ddd;
+  }
+  
+  .social-button.naver {
+    background-color: #1EC800;
+    color: white;
+  }
+  
+  .social-button.kakao {
+    background-color: #FEE500;
+    color: #3C1E1E;
+  }
+  

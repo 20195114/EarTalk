@@ -1,0 +1,56 @@
+.record-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f4e04d;
+  }
+  
+  .logo-container {
+    width: 20%;
+    background-color: #f4e04d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .logo-image {
+    width: 100px;
+    margin-bottom: 20px;
+  }
+  
+  .logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .wav-list {
+    width: 80%;
+    background-color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .wav-item {
+    width: 80%;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .wav-item:hover {
+    background-color: #eee;
+  }
+  

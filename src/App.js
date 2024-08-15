@@ -1,26 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Routes, Route } from 'react-router-dom';
+import Default from "./Page/pages/Default";
+import Fpassword from "./Page/pages/Fpassword";
+import Join from "./Page/pages/Join";
+import Login from "./Page/pages/Login";
+import Record from "./Page/pages/Record";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<Default />} />
+      <Route path="/Default" element={<Default />} />
+      <Route path="/Fpassword" element={<Fpassword />} />
+      <Route path="/Join" element={<Join />} />
+      <Route path="/Login" element={<Login />} />
+      <Route path="/Record" element={<Record />} />
+
+    </Routes>
   );
 }
 
 export default App;
-//
