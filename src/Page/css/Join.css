@@ -1,57 +1,115 @@
 .join-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f4e04d;
-  }
-  
-  .logo {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .logo-image {
-    width: 100px; /* Adjust the size according to your logo */
-  }
-  
-  .logo-text {
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f4e04d;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo-image {
+  width: 100px; /* 로고 크기 조정 */
+  height: auto;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000; /* 텍스트 가독성 향상 */
+}
+
+.join-form {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.join-input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.join-input:focus {
+  border-color: #555;
+  outline: none;
+}
+
+.join-input select {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.join-button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.join-button:hover {
+  background-color: #444;
+}
+
+.join-button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* 반응형 웹 디자인 */
+@media only screen and (max-width: 768px) {
   .join-form {
-    width: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: 90%;
+    padding: 15px;
   }
-  
+
   .join-input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+    font-size: 14px;
   }
-  
-  .join-input select {
-    padding: 10px;
-    font-size: 16px;
-  }
-  
+
   .join-button {
+    font-size: 14px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .join-form {
     width: 100%;
     padding: 10px;
-    margin: 10px 0;
-    background-color: #555;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
   }
-  
+
+  .join-input {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .join-button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}

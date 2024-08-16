@@ -1,108 +1,181 @@
 .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f4e04d;
-  }
-  
-  .logo {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .logo-image {
-    width: 100px; /* Adjust the size according to your logo */
-  }
-  
-  .logo-text {
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f4e04d;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo-image {
+  width: 100px; /* 로고 크기 조정 */
+  height: auto;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 2px #000; /* 텍스트 가독성 향상 */
+}
+
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.login-input:focus {
+  border-color: #555;
+  outline: none;
+}
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #444;
+}
+
+.login-options {
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.login-options a {
+  color: #555;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.login-options a:hover {
+  text-decoration: underline;
+}
+
+.social-login {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.social-button {
+  width: 100%;
+  max-width: 250px;
+  padding: 10px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.social-button.google {
+  background-color: white;
+  color: #4285F4;
+  border: 1px solid #ddd;
+}
+
+.social-button.google:hover {
+  background-color: #f5f5f5;
+}
+
+.social-button.naver {
+  background-color: #1EC800;
+  color: white;
+}
+
+.social-button.naver:hover {
+  background-color: #17a600;
+}
+
+.social-button.kakao {
+  background-color: #FEE500;
+  color: #3C1E1E;
+}
+
+.social-button.kakao:hover {
+  background-color: #e5d200;
+}
+
+/* 반응형 웹 디자인 */
+@media only screen and (max-width: 768px) {
   .login-form {
-    width: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: 90%;
+    padding: 15px;
   }
-  
+
   .login-input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  .password-container {
-    position: relative;
-    width: 100%;
-  }
-  
-  .password-icon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-  }
-  
-  .login-button {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    background-color: #555;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .login-options {
-    margin-top: 10px;
     font-size: 14px;
   }
-  
-  .login-options a {
-    color: #555;
-    text-decoration: none;
+
+  .login-button, .social-button {
+    font-size: 14px;
   }
-  
-  .social-login {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .social-button {
-    width: 250px;
+}
+
+@media only screen and (max-width: 480px) {
+  .login-form {
+    width: 100%;
     padding: 10px;
-    margin: 5px 0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
   }
-  
-  .social-button.google {
-    background-color: white;
-    color: #4285F4;
-    border: 1px solid #ddd;
+
+  .login-input {
+    font-size: 14px;
+    padding: 8px;
   }
-  
-  .social-button.naver {
-    background-color: #1EC800;
-    color: white;
+
+  .login-button, .social-button {
+    font-size: 14px;
+    padding: 10px;
   }
-  
-  .social-button.kakao {
-    background-color: #FEE500;
-    color: #3C1E1E;
-  }
-  
+}
