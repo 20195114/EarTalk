@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import logo from '../URL/EarTalkLOGO.png';
 import '../css/Join.css';
 
 const Join = () => {
@@ -19,6 +20,10 @@ const Join = () => {
       [e.target.name]: e.target.value,
     });
   };
+  
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,17 +33,32 @@ const Join = () => {
       return;
     }
 
+    if (formData.password.length <= 8) {
+      setError("비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
+
     try {
+      const formattedData = {
+        email: formData.email,
+        password: formData.password,
+        verify_password: formData.confirmPassword,
+        birth: `${formData.birthdate.slice(0, 4)}-${formData.birthdate.slice(4, 6)}-${formData.birthdate.slice(6, 8)}T00:00:00.000Z`,
+        sex: formData.gender === "male",
+      };
+
       const response = await fetch('/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formattedData),
       });
 
       if (response.ok) {
         navigate('/login'); // 회원가입 성공 시 로그인 페이지로 이동
+      } else if (response.status === 400) {
+        setError("해당 이메일을 사용하는 사용자가 이미 존재합니다.");
       } else {
         const errorData = await response.json();
         setError(`회원가입 실패: ${errorData.detail}`);
@@ -50,15 +70,15 @@ const Join = () => {
 
   return (
     <div className="join-container">
-      <div className="logo">
-        <img src="your-logo-url-here" alt="이어톡" className="logo-image" />
+      <div className="logo-container">
+        <img src={logo} alt="이어톡 로고" onClick={handleLogoClick} className="logo-image" />
         <h1 className="logo-text">이어톡</h1>
       </div>
       <form className="join-form" onSubmit={handleSubmit}>
         <input
           type="email"
           name="email"
-          placeholder="이메일"
+          placeholder="아이디 (email)"
           className="join-input"
           value={formData.email}
           onChange={handleChange}

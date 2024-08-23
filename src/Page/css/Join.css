@@ -2,114 +2,61 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #f4e04d;
   padding: 20px;
+  background-color: #fdda44;
+  height: 100vh;
   box-sizing: border-box;
+  justify-content: center;
 }
 
 .logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   margin-bottom: 20px;
 }
 
 .logo-image {
-  width: 100px; /* 로고 크기 조정 */
+  width: 100px;
   height: auto;
+  margin-bottom: 10px; /* 로고 이미지와 텍스트 사이 간격 */
 }
 
 .logo-text {
   font-size: 24px;
-  font-weight: bold;
-  color: #fff;
-  text-shadow: 1px 1px 2px #000; /* 텍스트 가독성 향상 */
+  color: #ffffff;
 }
 
 .join-form {
-  width: 100%;
-  max-width: 400px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 300px;
 }
 
 .join-input {
-  width: 100%;
   padding: 10px;
-  margin: 10px 0;
+  margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-.join-input:focus {
-  border-color: #555;
-  outline: none;
-}
-
-.join-input select {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
+  font-size: 14px;
 }
 
 .join-button {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  background-color: #555;
+  background-color: #6b6b6b;
   color: white;
+  padding: 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
-.join-button:hover {
-  background-color: #444;
-}
-
-.join-button:disabled {
-  background-color: #aaa;
-  cursor: not-allowed;
-}
-
-/* 반응형 웹 디자인 */
-@media only screen and (max-width: 768px) {
-  .join-form {
-    width: 90%;
-    padding: 15px;
-  }
-
-  .join-input {
-    font-size: 14px;
-  }
-
-  .join-button {
-    font-size: 14px;
-  }
-}
-
-@media only screen and (max-width: 480px) {
-  .join-form {
-    width: 100%;
-    padding: 10px;
-  }
-
-  .join-input {
-    font-size: 14px;
-    padding: 8px;
-  }
-
-  .join-button {
-    font-size: 14px;
-    padding: 10px;
-  }
+.error-message {
+  color: red;
+  font-size: 12px;
+  text-align: center;
 }

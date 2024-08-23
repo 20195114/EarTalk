@@ -1,111 +1,187 @@
 .record-container {
   display: flex;
   height: 100vh;
-  background-color: #f4e04d;
-  flex-direction: column; /* 기본 방향을 column으로 변경하여 작은 화면에서 적절히 표시 */
+  background-color: #fdda44;
+  flex-direction: column;
+  align-items: center; /* 중앙 정렬 */
+  margin-top: 0; /* 윗 여백 제거 */
 }
 
-.logo-container {
-  width: 100%;
-  background-color: #f4e04d;
+.R-logo-container {
+  width: 15%;
+  height: 100%;
+  background-color: #fdda44;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  align-items: flex-start; /* 왼쪽으로 정렬 */
+  justify-content: flex-start; /* 위쪽에 정렬 */
+  padding: 20px; /* 상단과 좌우에 패딩을 추가 */
   box-sizing: border-box;
+  position: absolute; /* 절대 위치를 사용하여 화면의 왼쪽에 고정 */
+  align-items: center; /* 중앙 정렬 */
+  left: 0; /* 왼쪽 끝으로 이동 */
 }
 
-.logo-image {
-  width: 100px;
-  margin-bottom: 20px;
-  height: auto;
+.R-logo-image {
+  width: 65px; /* 로고 크기 조정 */
+  margin-bottom: 10px; /* 간격 조정 */
+  height: 70px;
 }
 
-.logo-text {
-  font-size: 24px;
+.R-logo-text {
+  font-size: 22px; /* 텍스트 크기 조정 */
   font-weight: bold;
   color: white;
-  text-shadow: 1px 1px 2px #000; /* 텍스트 가독성 향상 */
 }
 
 .wav-list {
   width: 100%;
+  height: 100%;
+  max-width: 1000px; /* 리스트의 최대 너비를 설정 */
   background-color: white;
-  padding: 20px;
+  padding: 10px 10px 0px 10px; /* 윗 패딩 제거 */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   box-sizing: border-box;
-  overflow-y: auto; /* 많은 WAV 파일을 표시할 때 스크롤 가능하게 설정 */
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1); /* 시각적 깊이 추가 */
+  overflow-y: auto; /* 스크롤 가능하도록 설정 */
+  border-radius: 10px; /* 테두리 둥글게 설정 */
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .wav-item {
   width: 100%;
-  max-width: 600px;
+  max-width: 450px; /* 항목 너비를 조정 */
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 10px;
-  margin: 10px 0;
-  padding: 20px;
+  margin: 5px 0;
+  padding: 15px;
   text-align: center;
   font-size: 18px;
   font-weight: bold;
   color: #333;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.wav-item p {
+  margin: 10px 0;
+}
+
+.wav-item audio {
+  margin-top: 10px;
+  width: 100%;
 }
 
 .wav-item:hover {
   background-color: #eee;
+  transform: scale(1.05); /* 마우스 커서가 올라갔을 때 크기 확대 */
+}
+
+.show-more-button {
+  background-color: #6b6b6b;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.show-more-button:hover {
+  background-color: #555;
 }
 
 /* 반응형 웹 디자인 */
-@media only screen and (min-width: 769px) {
+@media only screen and (max-width: 768px) {
   .record-container {
-    flex-direction: row; /* 큰 화면에서는 row 방향으로 변경 */
+    flex-direction: column;
+    align-items: flex-start;
+    align-items: center;
   }
 
-  .logo-container {
-    width: 20%;
+  .R-logo-container {
+    width: 100%; /* 더 작은 화면에서는 로고 컨테이너의 폭 증가 */
+    height: 25%;
+    padding: 10px;
+    align-items: center;
+
+  }
+
+  .R-logo-image {
+    padding-top: 20px;
+    width: 70px;
+    height: 70px; /* 로고 크기 조정 */
+  }
+
+  .R-logo-text {
+    font-size: 18px;
+    padding-left: 10px;
   }
 
   .wav-list {
-    width: 80%;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* 시각적 깊이 조정 */
+    width: 70%; /* WAV 리스트의 폭을 조정 */
+    max-width: 800px;
+    padding-top: 30%;
+    align-items: center;
   }
-}
 
-@media only screen and (max-width: 768px) {
   .wav-item {
+    max-width: 300px; /* 항목 너비를 조정 */
+    padding: 10px;
     font-size: 16px;
-    padding: 15px;
+    align-items: center;
   }
 
-  .logo-text {
-    font-size: 20px;
+  .show-more-button {
+    font-size: 14px;
+    padding: 8px 16px;
   }
 }
 
 @media only screen and (max-width: 480px) {
+  .record-container {
+    flex-direction: column;
+    align-items: flex-start;
+    align-items: center;
+  }
+
+  .R-logo-container {
+    width: 100%; /* 더 작은 화면에서는 로고 컨테이너의 폭 증가 */
+    height: 20%;
+    align-items: center;
+  }
+
+  .R-logo-image {
+    width: 50px;
+    height: 50px; /* 로고 크기 더 작게 조정 */
+    padding-left: 5px; /* 로고의 왼쪽 여백 최소화 */
+  }
+
+  .R-logo-text {
+    font-size: 16px;
+    padding-left: 5px;
+  }
+
+  .wav-list {
+    width: 100%; /* 리스트의 폭을 전체 화면으로 설정 */
+    max-width: none;
+    padding-top: 35%;
+    align-items: center;
+  }
+
   .wav-item {
+    max-width: 250px; /* 항목 너비를 더 작게 조정 */
+    padding: 8px;
     font-size: 14px;
-    padding: 10px;
+    align-items: center;
   }
 
-  .logo-image {
-    width: 80px;
-  }
-
-  .logo-text {
-    font-size: 18px;
+  .show-more-button {
+    font-size: 12px;
+    padding: 6px 12px;
   }
 }

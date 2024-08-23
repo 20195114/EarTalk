@@ -1,13 +1,17 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../App';  // 경로를 '../../App'으로 수정
+import { AuthContext } from '../../App';
+import logo from '../URL/EarTalkLOGO.png';
+import googleLogo from '../URL/GoogleLogo.png';
+import naverLogo from '../URL/NaverLogo.png';
+import kakaoLogo from '../URL/KakaoLogo.png';
 import '../css/Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const { setIsAuthenticated, setAuthToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -28,6 +32,7 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('access_token', data.access_token);
+        setAuthToken(data.access_token);
         setIsAuthenticated(true);
         navigate('/'); // 로그인 후 메인 페이지로 이동
       } else {
@@ -38,20 +43,53 @@ const Login = () => {
     }
   };
 
+  const handleSocialLogin = async (provider) => {
+    try {
+      let authUrl = '';
+      const redirectUri = window.location.origin + '/auth/callback';
+
+      switch (provider) {
+        case 'google':
+          authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=GOOGLE_CLIENT_ID&redirect_uri=${redirectUri}&response_type=code&scope=email%20profile`;
+          break;
+        case 'naver':
+          authUrl = `https://nid.naver.com/oauth2.0/authorize?client_id=NAVER_CLIENT_ID&redirect_uri=${redirectUri}&response_type=code&state=STATE_STRING`;
+          break;
+        case 'kakao':
+          authUrl = `https://kauth.kakao.com/oauth/authorize?client_id=KAKAO_CLIENT_ID&redirect_uri=${redirectUri}&response_type=code`;
+          break;
+        default:
+          throw new Error('Unknown provider');
+      }
+
+      window.location.href = authUrl; // 소셜 로그인 페이지로 리디렉션
+    } catch (error) {
+      setError('소셜 로그인 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   const handleSignupClick = () => {
     navigate('/join');
   };
 
+  const handlePasswordReset = () => {
+    navigate('/fpassword'); // 비밀번호 찾기 페이지로 이동
+  };
+
   return (
     <div className="login-container">
-      <div className="logo">
-        <img src="your-logo-url-here" alt="이어톡" className="logo-image" />
+      <div className="logo-container">
+        <img src={logo} alt="이어톡 로고" onClick={handleLogoClick} className="logo-image" />
         <h1 className="logo-text">이어톡</h1>
       </div>
       <form className="login-form" onSubmit={handleLogin}>
         <input
           type="email"
-          placeholder="이메일"
+          placeholder="아이디 (email)"
           className="login-input"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -66,18 +104,23 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <span className="password-icon">🔒</span>
         </div>
-        <button type="submit" className="login-button">로그인</button>
+        <button type="submit" className="login-submit-button">로그인</button>
         {error && <p className="error-message">{error}</p>}
       </form>
       <div className="login-options">
-        <a href="/reset-password" className="forgot-password">비밀번호 찾기</a> | <a href="#" className="signup" onClick={handleSignupClick}>회원가입</a>
+        <a href="#" className="forgot-password" onClick={handlePasswordReset}>비밀번호 찾기</a> | <a href="#" className="signup" onClick={handleSignupClick}>회원가입</a>
       </div>
       <div className="social-login">
-        <button className="social-button google">Continue with Google</button>
-        <button className="social-button naver">Log in with Naver</button>
-        <button className="social-button kakao">Login with Kakao</button>
+        <button className="social-button google" onClick={() => handleSocialLogin('google')}>
+          <img src={googleLogo} alt="Google" />
+        </button>
+        <button className="social-button naver" onClick={() => handleSocialLogin('naver')}>
+          <img src={naverLogo} alt="Naver" />
+        </button>
+        <button className="social-button kakao" onClick={() => handleSocialLogin('kakao')}>
+          <img src={kakaoLogo} alt="Kakao" />
+        </button>
       </div>
     </div>
   );

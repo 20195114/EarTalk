@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import logo from '../URL/EarTalkLOGO.png';
 import '../css/Fpassword.css';
 
 const Fpassword = () => {
@@ -37,10 +38,11 @@ const Fpassword = () => {
 
   return (
     <div className="fpassword-container">
-      <div className="logo">
-        <img src="your-logo-url-here" alt="이어톡 로고" className="logo-image" />
+      <div className="logo-container">
+        <img src={logo} alt="이어톡 로고" className="logo-image" />
         <h1 className="logo-text">이어톡</h1>
       </div>
+    
       <form className="fpassword-form" onSubmit={handlePasswordReset}>
         <input
           type="email"
