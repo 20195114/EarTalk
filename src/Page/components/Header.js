@@ -104,13 +104,11 @@
 
 // export default Header;
 
-
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../App'; // AuthContext를 통해 로그인 상태 관리
+import { AuthContext } from '../../App';
 import logo from '../URL/EarTalkLOGO.png';
 import { FaUserCircle } from "react-icons/fa";
-import axios from 'axios';
 import '../css/Header.css';
 
 const Header = () => {
@@ -120,16 +118,34 @@ const Header = () => {
   const [showUserInfo, setShowUserInfo] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  // 사용자가 로그인되어 있다고 가정하고 사용자 정보 임의로 설정
-  const [username, setUsername] = useState('eartalk@example.com');
-  const [birthDate, setBirthDate] = useState('2000-03-01');
-  const [gender, setGender] = useState('여자');
+  // 임의의 로그인 상태 가정
+  useEffect(() => {
+    const fakeToken = 'fake-access-token'; // 임의의 토큰
+    const fakeUser = {
+      username: 'eartalk@example.com',
+      birthDate: '2000-03-01',
+      gender: '여자'
+    };
+
+    setAuthToken(fakeToken);
+    setIsAuthenticated(true);
+
+    // 클릭 핸들러 등록
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      // 컴포넌트 언마운트 시 이벤트 핸들러 제거
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [setAuthToken, setIsAuthenticated]);
 
   const handleLoginLogout = () => {
-    if (isAuthenticated) {
-      setShowLogoutConfirm(true); // 로그아웃 확인 창 표시
-    } else {
-      navigate('/login'); // 로그인 페이지로 이동
+    setShowUserMenu(!showUserMenu); // 드롭다운 메뉴 표시/숨김 토글
+  };
+
+  const handleClickOutside = (event) => {
+    // 드롭다운 메뉴 외부를 클릭하면 닫히도록 설정
+    if (!event.target.closest('.user-menu-container')) {
+      setShowUserMenu(false);
     }
   };
 
@@ -137,15 +153,8 @@ const Header = () => {
     setIsAuthenticated(false);
     setAuthToken(null);  // 토큰 삭제
     setShowLogoutConfirm(false);
+    setShowUserMenu(false);
     navigate('/'); // 홈 페이지로 이동
-  };
-
-  const toggleUserMenu = () => {
-    if (isAuthenticated) {
-      setShowUserInfo(true); // 사용자 정보 창 표시
-    } else {
-      navigate('/login');
-    }
   };
 
   const handleLogoClick = () => {
@@ -153,7 +162,19 @@ const Header = () => {
   };
 
   const handlePasswordReset = () => {
+    setShowUserInfo(false);
+    setShowUserMenu(false);
     navigate('/reset-password'); // 비밀번호 재설정 페이지로 이동
+  };
+
+  const handleUserInfoClick = () => {
+    setShowUserInfo(true);
+    setShowUserMenu(false);
+  };
+
+  const handleRecordListClick = () => {
+    setShowUserMenu(false);
+    navigate('/Record'); // 녹음 목록 페이지로 이동
   };
 
   return (
@@ -162,18 +183,28 @@ const Header = () => {
         <img src={logo} alt="이어톡 로고" className="logo" />
         <h1 className="logo-text">이어톡</h1>
       </div>
-      <button className="login-button" onClick={handleLoginLogout}>
-        <FaUserCircle className="user-icon" onClick={toggleUserMenu} />
-        {isAuthenticated ? '로그아웃' : '로그인'}
-      </button>
+      <div className="user-menu-container">
+        <button className="login-button" onClick={handleLoginLogout}>
+          <FaUserCircle className="user-icon" />
+          {isAuthenticated ? '로그아웃' : '로그인'}
+        </button>
+
+        {showUserMenu && (
+          <div className="user-menu">
+            <button className="user-menu-item" onClick={handleUserInfoClick}>사용자 정보</button>
+            <button className="user-menu-item" onClick={handlePasswordReset}>비밀번호 재설정</button>
+            <button className="user-menu-item" onClick={handleRecordListClick}>녹음 목록</button>
+          </div>
+        )}
+      </div>
 
       {showUserInfo && (
         <div className="user-info-modal">
           <div className="user-info-content">
             <button className="close-button" onClick={() => setShowUserInfo(false)}>X</button>
-            <p>아이디: {username}</p>
-            <p>생년월일: {birthDate}</p>
-            <p>성별: {gender}</p>
+            <p>아이디: eartalk@example.com</p>
+            <p>생년월일: 2000-03-01</p>
+            <p>성별: 여자</p>
             <button className="reset-password-button" onClick={handlePasswordReset}>비밀번호 재설정</button>
           </div>
         </div>
