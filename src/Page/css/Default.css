@@ -1,3 +1,4 @@
+/* 공통 스타일 */
 .ear-talk-container {
   display: flex;
   flex-direction: column;
@@ -6,58 +7,6 @@
   height: 100vh;
   padding: 20px;
   box-sizing: border-box;
-}
-
-.ear-talk-header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* 로고와 마이크 아이콘을 세로로 정렬 */
-  background-color: #FDDA44; /* 배경색 통일 */
-  padding: 0 20px;
-  box-sizing: border-box;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.logo {
-  height: 80px;
-  margin-right: 10px;
-}
-
-.record-button {
-  width: 90px;
-  height: 95px;
-  background-color: #FDDA44; /* 배경색 통일 */
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
-  font-size: 36px; /* 아이콘 크기 증가 */
-  margin-bottom: 10px; 
-  position: relative;
-  top: -50px; /* 버튼을 위로 이동 */
-}
-
-.record-button.recording {
-  background-color: #ff4d4d; 
-  animation: blink 1s infinite; /* 깜빡이는 효과 */
-}
-
-@keyframes blink {
-  0%, 100% {
-    background-color: #ff4d4d;
-  }
-  50% {
-    background-color: #ff9999;
-  }
 }
 
 .ear-talk-main {
@@ -96,38 +45,109 @@
   transition: background-color 0.3s ease;
   margin-right: 90%;
   position: relative;
-  top: -30px; /* 버튼을 위로 이동 */
+  top: -30px; /* 기본 위치 */
 }
 
 .convert-button:hover {
   background-color: #ccc; /* 호버 시 색상 변경 */
 }
 
+/* 로그인 상태에서 convert-button 위치 조정 */
+.convert-button.logged-in {
+  background-color: #ddd;
+  border: 9px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+  width: 100px;
+  height: 60px;
+  transition: background-color 0.3s ease;
+  margin-right: 80%;
+  margin-top: 3.5%;
+  position: relative;
+  right: 60px;
+}
+
+.record-button {
+  width: 90px;
+  height: 95px;
+  background-color: #FDDA44; /* 배경색 통일 */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  font-size: 36px; /* 아이콘 크기 증가 */
+  margin-bottom: 10px; 
+  position: relative;
+  top: -50px; /* 버튼을 위로 이동 */
+}
+
+.record-button.recording {
+  background-color: #ff4d4d; 
+  animation: blink 1s infinite; /* 깜빡이는 효과 */
+}
+
+.record-button.logged-in {
+  width: 95px;
+  height: 107px;
+  background-color: #FDDA44; /* 배경색 통일 */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  font-size: 36px; /* 아이콘 크기 증가 */
+  margin-bottom: 10px; 
+  position: relative;
+  top: -70px; /* 버튼을 위로 이동 */
+}
+
+@keyframes blink {
+  0%, 100% {
+    background-color: #ff4d4d;
+  }
+  50% {
+    background-color: #ff9999;
+  }
+}
+
 .icon-container {
   position: absolute;
-  bottom: 100px;
   right: 40px;
   display: flex;
   align-items: center;
+  top: 520px;
+}
+
+/* 로그인 상태에서 icon-container 위치 조정 */
+.icon-container.logged-in {
+  position: absolute;
+  right: 40px;
+  display: flex;
+  align-items: center;
+  top: 500px;
 }
 
 .icon-button {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 30px;
   color: #333;
-  margin-bottom: 20px;
-  position: relative;
-  top: -40px; /* 아이콘을 위로 이동 */
+  margin-left: 10px;
+}
+
+.icon-button:first-child {
+  margin-left: 0;
 }
 
 .icon-button:focus {
   outline: none;
-}
-
-.icon-button + .icon-button {
-  margin-left: 10px; /* 간격 조정 */
 }
 
 .recording-alert {
@@ -203,26 +223,47 @@
   }
   
   .convert-button {
-    width: 13%;
-    padding: 10px;
-    font-size: 14px;
-    margin-left: 10%;
+    top: -10px;
+    left: 30px;
+    font-size: 16px;
+    width: 80px;
+    height: 45px;
+  }
+
+  .convert-button.convert-button.logged-in {
+    top: -10px;
+    left: 0px;
+    font-size: 16px;
+    width: 80px;
+    height: 45px;
   }
 
   .record-button {
-    width: 60px;
-    height: 70px;
-    font-size: 28px;
-    bottom: 80px;
-    top: -60px;
+    width: 80px;
+    height: 85px;
+    font-size: 30px;
+    top: -45px;
+  }
+
+  .record-button.logged-in {
+    width: 70px;
+    height: 75px;
+    font-size: 30px;
+    top: -45px;
+  }
+
+  .icon-container {
+    right: 35px;
+    bottom: 75px;
+    top: 340px;  }
+
+  .icon-container.logged-in {
+    bottom: 75px;
+    top: 340px;
   }
 
   .icon-button {
-    font-size: 20px;
-  }
-
-  .icon-button + .icon-button {
-    margin-left: 10px;
+    font-size: 22px;
   }
 }
 
@@ -233,34 +274,52 @@
   }
 
   .text-area {
-    height: 400px;
+    height: 300px;
     width: 85%;
   }
 
   .convert-button {
-    width: 18%;
-    padding: 8px;
-    font-size: 14px;
-    margin-left: 15%;
-    bottom: 80px;
-    top: -10px;
+    top: 0px;
+    left: 30px;
+    font-size: 16px;
+    width: 80px;
+    height: 40px;
+  }
+
+  .convert-button.convert-button.logged-in {
+    top: 0px;
+    left: 20px;
+    font-size: 16px;
+    width: 80px;
+    height: 40px;
   }
 
   .record-button {
-    width: 65px;
-    height: 90px;
+    width: 60px;
+    height: 65px;
     font-size: 24px;
-    bottom: 100px; 
-    top: -40px;
+    top: -35px;
+  }
+
+  .record-button.logged-in {
+    width: 70px;
+    height: 75px;
+    font-size: 30px;
+    top: -45px;
+  }
+
+  .icon-container {
+    bottom: 75px;
+    top: 380px;
+    right: 30px;
+  }
+
+  .icon-container.logged-in {
+    bottom: 75px;
+    top: 320px;
   }
 
   .icon-button {
     font-size: 20px;
-    bottom: 80px;
-    top: 0px;
-  }
-
-  .icon-button + .icon-button {
-    margin-left: 10px;
   }
 }
