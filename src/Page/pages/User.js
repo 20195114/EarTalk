@@ -4,7 +4,7 @@ import '../css/User.css';
 import { AuthContext } from '../../App';  
 
 const User = () => {
-  const { isAuthenticated, authToken, setIsAuthenticated, setAuthToken } = useContext(AuthContext);
+  const { isAuthenticated, authToken } = useContext(AuthContext);
   const [userInfo, setUserInfo] = useState(null);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -23,11 +23,7 @@ const User = () => {
       })
         .then(response => {
           if (response.status === 403) {
-            setMessage("토큰이 유효하지 않습니다. 다시 로그인 해주세요.");
-            setIsAuthenticated(false);
-            setAuthToken(null);
-            sessionStorage.removeItem('access_token');
-            navigate("/login");
+            navigate("/login"); // 토큰이 유효하지 않으면 로그인 페이지로 리다이렉트
             throw new Error("토큰이 유효하지 않음");
           }
           return response.json();
@@ -40,13 +36,13 @@ const User = () => {
           setMessage("사용자 정보를 불러오는 데 실패했습니다.");
         });
     }
-  }, [isAuthenticated, authToken, navigate, setIsAuthenticated, setAuthToken]);
+  }, [isAuthenticated, authToken, navigate]);
 
   const handlePasswordReset = () => {
     navigate("/ResetPassword"); // 비밀번호 재설정 페이지로 이동
   };
 
-  if (!userInfo && !message) {
+  if (!userInfo) {
     return <div>로딩 중...</div>; // 사용자 정보 로딩 중
   }
 
@@ -54,14 +50,10 @@ const User = () => {
     <div className="user-page-container">
       <h2>사용자 정보</h2>
       {message && <p className="user-message">{message}</p>}
-      {userInfo && (
-        <>
-          <p className="user-info"><strong>아이디 (이메일):</strong> {userInfo.email}</p>
-          <p className="user-info"><strong>출생년도:</strong> {userInfo.birthyear}</p>
-          <p className="user-info"><strong>성별:</strong> {userInfo.sex ? "남성" : "여성"}</p>
-          <button className="user-button reset-password-button" onClick={handlePasswordReset}>비밀번호 변경</button>
-        </>
-      )}
+      <p className="user-info"><strong>아이디 (이메일):</strong> {userInfo.email}</p>
+      <p className="user-info"><strong>출생년도:</strong> {userInfo.birthyear}</p>
+      <p className="user-info"><strong>성별:</strong> {userInfo.sex ? "남성" : "여성"}</p>
+      <button className="user-button reset-password-button" onClick={handlePasswordReset}>비밀번호 변경</button>
     </div>
   );
 };

@@ -3,21 +3,29 @@ import React, { createContext, useState, useEffect } from 'react';
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [authToken, setAuthToken] = useState(() => sessionStorage.getItem('authToken'));
-  const [isAuthenticated, setIsAuthenticated] = useState(() => !!authToken);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authToken, setAuthToken] = useState(null);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('authToken');
+    if (token) {
+      setAuthToken(token);
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (authToken) {
-      setIsAuthenticated(true);
       sessionStorage.setItem('authToken', authToken);
     } else {
-      setIsAuthenticated(false);
       sessionStorage.removeItem('authToken');
     }
   }, [authToken]);
 
   const logout = () => {
-    setAuthToken(null); // isAuthenticated는 useEffect에서 자동으로 false로 설정됩니다.
+    setIsAuthenticated(false);
+    setAuthToken(null);
+    sessionStorage.removeItem('authToken');
   };
 
   return (

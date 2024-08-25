@@ -11,7 +11,7 @@ import '../css/Default.css';
 const Default = () => {
   const { isAuthenticated, authToken } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  
   const [inputText, setInputText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [processedAudio, setProcessedAudio] = useState(null);
@@ -57,16 +57,10 @@ const Default = () => {
           const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
           setAudioChunks([]);
           const formData = new FormData();
-
+          
           formData.append('audio', audioBlob, 'voice_sample.wav');
           if (inputText && isAuthenticated) {
             formData.append('input_text', inputText);
-          }
-
-          if (!inputText && audioChunks.length === 0) {
-            setShowAlert('텍스트 또는 음성을 입력해야 합니다.');
-            setTimeout(() => setShowAlert(''), 3000);
-            return;
           }
 
           setIsProcessing(true);
@@ -102,19 +96,17 @@ const Default = () => {
         setShowAlert('녹음을 시작할 수 없습니다.');
       }
     } else {
-      if (audioRef.current) {
-        audioRef.current.stop();
-      }
       setIsRecording(false);
     }
   };
 
+  const handleFinishRecording = async () => {
+    setIsRecording(false);
+    await handleTextConversion();
+  };
+
   const handleTextConversion = async () => {
-    if (!inputText) {
-      setShowAlert('텍스트를 입력해야 합니다.');
-      setTimeout(() => setShowAlert(''), 3000);
-      return;
-    }
+    if (!inputText) return;
 
     setIsProcessing(true);
     setShowAlert('처리 중입니다. 잠시만 기다려 주세요.');
@@ -134,7 +126,6 @@ const Default = () => {
       setShowAlert('인식 결과가 텍스트 창에 표시됩니다.');
       setTimeout(() => {
         setShowAlert('');
-        handlePlayTTS(); // 자동 재생
       }, 2000);
     } catch (error) {
       console.error('Error during conversion', error);
@@ -209,6 +200,11 @@ const Default = () => {
             >
               {isRecording ? <FiMicOff /> : <FiMic />}
             </div>
+            {isRecording && (
+              <button className="finish-recording-button" onClick={handleFinishRecording}>
+                녹음 완료
+              </button>
+            )}
             {showAlert && (
               <div className="recording-alert">
                 {showAlert}
@@ -217,7 +213,7 @@ const Default = () => {
           </>
         )}
         {processedAudio && (
-          <audio controls src={processedAudio} ref={audioRef} autoPlay></audio>
+          <audio controls src={processedAudio} ref={audioRef}></audio>
         )}
         <div className={`icon-container ${isAuthenticated ? 'logged-in' : ''}`}>
           <button className="icon-button" onClick={handleCopyText}>
