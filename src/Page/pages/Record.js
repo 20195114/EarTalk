@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from '../URL/EarTalkLOGO.png';
 import '../css/Record.css';
@@ -10,6 +10,7 @@ const Record = () => {
   const [visibleFiles, setVisibleFiles] = useState([]);
   const [showMore, setShowMore] = useState(true);
   const navigate = useNavigate();
+  const currentAudioRef = useRef(null); 
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -59,6 +60,16 @@ const Record = () => {
     navigate('/');
   };
 
+  const handleAudioPlay = (audioElement) => {
+    // 이전에 재생 중인 오디오가 있으면 중지
+    if (currentAudioRef.current && currentAudioRef.current !== audioElement) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current.currentTime = 0;
+    }
+    // 새로운 오디오를 현재 재생 중인 오디오로 설정
+    currentAudioRef.current = audioElement;
+  };
+
   return (
     <div className="record-container">
       <aside className="R-logo-container">
@@ -72,7 +83,13 @@ const Record = () => {
               <p><strong>파일명:</strong> {file.name}</p>
               <p><strong>생성된 텍스트:</strong> {file.text}</p>
               <p><strong>생성 날짜:</strong> {file.date}</p>
-              <audio controls src={file.url}>Your browser does not support the audio element.</audio>
+              <audio
+                controls
+                src={file.url}
+                onPlay={(e) => handleAudioPlay(e.target)} // 오디오 재생 이벤트 핸들링
+              >
+                Your browser does not support the audio element.
+              </audio>
             </div>
           ))
         ) : (

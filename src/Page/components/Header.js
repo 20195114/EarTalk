@@ -11,6 +11,8 @@ const Header = () => {
   const navigate = useNavigate();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLoginLogout = () => {
     if (!isAuthenticated) {
@@ -23,7 +25,7 @@ const Header = () => {
   const confirmLogout = () => {
     setIsAuthenticated(false);
     setAuthToken(null);
-    sessionStorage.removeItem('authToken'); // 토큰 삭제
+    sessionStorage.removeItem('access_token'); // 토큰 삭제
     setShowLogoutConfirm(false);
     setShowUserMenu(false);
     navigate('/'); // 홈 페이지로 이동
@@ -31,6 +33,26 @@ const Header = () => {
 
   const handleLogoClick = () => {
     navigate('/');
+  };
+
+  const handleLoginSubmit = async () => {
+    try {
+      const response = await axios.post('/login/access-token', new URLSearchParams({
+        username,
+        password,
+      }), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+      setAuthToken(response.data.access_token);
+      sessionStorage.setItem('access_token', response.data.access_token); // 토큰 저장
+      setIsAuthenticated(true);
+      navigate('/'); // 로그인 후 홈으로 이동
+    } catch (error) {
+      console.error('Login failed', error);
+      alert('이메일 또는 비밀번호가 올바르지 않습니다.');
+    }
   };
 
   const handlePasswordReset = () => {
@@ -43,6 +65,7 @@ const Header = () => {
     navigate('/Record'); // 녹음 목록 페이지로 이동
   };
 
+  // 사용자 정보를 클릭하면 User 페이지로 리디렉션
   const handleUserInfoClick = () => {
     setShowUserMenu(false);
     navigate('/User'); // User 페이지로 이동
@@ -83,3 +106,4 @@ const Header = () => {
 };
 
 export default Header;
+

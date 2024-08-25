@@ -104,7 +104,7 @@ const Login = () => {
   };
 
   const handleSignupClick = () => {
-    navigate('/join');
+    navigate('/Agreement');
   };
 
   const handlePasswordReset = () => {

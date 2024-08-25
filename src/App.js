@@ -6,7 +6,8 @@ import Join from './Page/pages/Join';
 import Record from './Page/pages/Record';
 import User from './Page/pages/User';
 import Fpassword from './Page/pages/Fpassword';
-import ResetPassword from './Page/pages/ResetPassword';  // 대소문자 정확히 일치
+import ResetPassword from './Page/pages/ResetPassword';  
+import Agreement from './Page/pages/Agreement'; 
 
 export const AuthContext = React.createContext();
 
@@ -24,6 +25,8 @@ function App() {
           <Route path="/user" element={<User />} />
           <Route path="/fpassword" element={<Fpassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />  {/* 경로 수정 */}
+          <Route path="/Agreement" element={<Agreement />} />  {/* 경로 수정 */}
+
         </Routes>
     </AuthContext.Provider>
   );
