@@ -16,6 +16,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(""); // 이전 오류 메시지 초기화
 
     try {
       const response = await fetch('/login/access-token', {
@@ -31,7 +32,7 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('access_token', data.access_token);
+        sessionStorage.setItem('access_token', data.access_token); // sessionStorage에 저장
         setAuthToken(data.access_token);
         setIsAuthenticated(true);
         navigate('/'); // 로그인 후 메인 페이지로 이동
@@ -46,7 +47,7 @@ const Login = () => {
   const handleSocialLogin = async (provider) => {
     try {
       let authUrl = '';
-      const redirectUri = window.location.origin + '/auth/callback';
+      const redirectUri = `${window.location.origin}/auth/callback`;
 
       switch (provider) {
         case 'google':
@@ -63,6 +64,36 @@ const Login = () => {
       }
 
       window.location.href = authUrl; // 소셜 로그인 페이지로 리디렉션
+    } catch (error) {
+      setError('소셜 로그인 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleSocialLoginCallback = async (provider, code) => {
+    try {
+      const urlMap = {
+        google: '/login/google-login',
+        naver: '/login/naver-login',
+        kakao: '/login/kakao-login'
+      };
+
+      const response = await fetch(urlMap[provider], {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({ code })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        sessionStorage.setItem('access_token', data.access_token); // sessionStorage에 저장
+        setAuthToken(data.access_token);
+        setIsAuthenticated(true);
+        navigate('/'); // 로그인 후 메인 페이지로 이동
+      } else {
+        setError('소셜 로그인 실패: 인가 코드 처리 중 오류가 발생했습니다.');
+      }
     } catch (error) {
       setError('소셜 로그인 중 오류가 발생했습니다.');
     }

@@ -34,7 +34,6 @@
 .login-button {
   background-color: #6b6b6b;
   border-radius: 5px;
-
   border: none;
   font-size: 14px;
   cursor: pointer;
@@ -48,7 +47,6 @@
   transition: all 0.3s ease; /* 애니메이션 효과 */
 }
 
-
 .user-icon {
   font-size: 24px;
   cursor: pointer;
@@ -56,7 +54,7 @@
   transition: all 0.3s ease; /* 애니메이션 효과 */
 }
 
-.user-info-modal, .logout-confirm-modal {
+.logout-confirm-modal {
   position: fixed;
   top: 20%;
   right: 20%;
@@ -67,7 +65,7 @@
   z-index: 1000;
 }
 
-.user-info-content, .logout-confirm-content {
+.logout-confirm-content {
   padding: 20px;
 }
 
@@ -129,7 +127,6 @@
 .user-menu-item:hover {
   background-color: #f1f1f1;
 }
-
 
 /* 반응형 웹 디자인 */
 @media only screen and (max-width: 768px) {

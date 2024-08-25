@@ -8,7 +8,7 @@ const Join = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    birthdate: "",
+    birthyear: "", // 기본 값 빈 문자열로 설정
     gender: "",
   });
   const [error, setError] = useState("");
@@ -19,8 +19,9 @@ const Join = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setError(""); // 에러 메시지 초기화
   };
-  
+
   const handleLogoClick = () => {
     navigate('/');
   };
@@ -33,8 +34,13 @@ const Join = () => {
       return;
     }
 
-    if (formData.password.length <= 8) {
+    if (formData.password.length < 8) {
       setError("비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
+
+    if (!formData.birthyear) {
+      setError("출생년도를 선택해주세요.");
       return;
     }
 
@@ -43,7 +49,7 @@ const Join = () => {
         email: formData.email,
         password: formData.password,
         verify_password: formData.confirmPassword,
-        birth: `${formData.birthdate.slice(0, 4)}-${formData.birthdate.slice(4, 6)}-${formData.birthdate.slice(6, 8)}T00:00:00.000Z`,
+        birthyear: formData.birthyear, // 출생년도 전송
         sex: formData.gender === "male",
       };
 
@@ -58,7 +64,9 @@ const Join = () => {
       if (response.ok) {
         navigate('/login'); // 회원가입 성공 시 로그인 페이지로 이동
       } else if (response.status === 400) {
-        setError("해당 이메일을 사용하는 사용자가 이미 존재합니다.");
+        setError("해당 이메일을 사용하는 사용자가 이미 존재하거나 비밀번호가 일치하지 않습니다.");
+      } else if (response.status === 422) {
+        setError("비밀번호는 8자 이상이어야 합니다.");
       } else {
         const errorData = await response.json();
         setError(`회원가입 실패: ${errorData.detail}`);
@@ -66,6 +74,23 @@ const Join = () => {
     } catch (error) {
       setError("회원가입 중 오류가 발생했습니다.");
     }
+  };
+
+  // 1900년부터 2024년까지의 년도 생성
+  const renderYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const startYear = 1900;
+    const years = [];
+
+    for (let i = currentYear; i >= startYear; i--) {
+      years.push(i);
+    }
+
+    return years.map((year) => (
+      <option key={year} value={year}>
+        {year}
+      </option>
+    ));
   };
 
   return (
@@ -102,15 +127,16 @@ const Join = () => {
           onChange={handleChange}
           required
         />
-        <input
-          type="text"
-          name="birthdate"
-          placeholder="생년월일(YYYYMMDD)"
+        <select
+          name="birthyear"
           className="join-input"
-          value={formData.birthdate}
+          value={formData.birthyear}
           onChange={handleChange}
           required
-        />
+        >
+          <option value="" disabled>출생년도</option> {/* 기본 선택 옵션 */}
+          {renderYearOptions()}
+        </select>
         <select
           name="gender"
           className="join-input"

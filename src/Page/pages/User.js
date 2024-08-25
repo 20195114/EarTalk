@@ -1,78 +1,67 @@
-import React, { useState, useContext } from "react";
-import { AuthContext } from '../../App';  // 경로를 '../../App'으로 수정
-// import '../css/User.css';
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import '../css/User.css';
+import { AuthContext } from '../../App';  
 
 const User = () => {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const { isAuthenticated, authToken, setIsAuthenticated, setAuthToken } = useContext(AuthContext);
+  const [userInfo, setUserInfo] = useState(null);
   const [message, setMessage] = useState("");
-  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-
-    if (newPassword !== confirmPassword) {
-      setMessage("새 비밀번호가 일치하지 않습니다.");
-      return;
-    }
-
-    try {
-      const response = await fetch('/users/password', {
-        method: 'POST',
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login"); // 로그인되어 있지 않으면 로그인 페이지로 리다이렉트
+    } else {
+      // 유저 정보를 가져오는 API 호출
+      fetch('/users/me', {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          'Authorization': `Bearer ${authToken}`,
         },
-        body: JSON.stringify({
-          current_password: currentPassword,
-          new_password: newPassword,
-          verify_new_password: confirmPassword,
-        }),
-      });
-
-      if (response.ok) {
-        setMessage("비밀번호가 성공적으로 변경되었습니다.");
-      } else {
-        setMessage("비밀번호 변경에 실패했습니다.");
-      }
-    } catch (error) {
-      setMessage("비밀번호 변경 중 오류가 발생했습니다.");
+      })
+        .then(response => {
+          if (response.status === 403) {
+            setMessage("토큰이 유효하지 않습니다. 다시 로그인 해주세요.");
+            setIsAuthenticated(false);
+            setAuthToken(null);
+            sessionStorage.removeItem('access_token');
+            navigate("/login");
+            throw new Error("토큰이 유효하지 않음");
+          }
+          return response.json();
+        })
+        .then(data => {
+          setUserInfo(data); // 사용자 정보 설정
+        })
+        .catch(error => {
+          console.error("Error fetching user data:", error);
+          setMessage("사용자 정보를 불러오는 데 실패했습니다.");
+        });
     }
+  }, [isAuthenticated, authToken, navigate, setIsAuthenticated, setAuthToken]);
+
+  const handlePasswordReset = () => {
+    navigate("/ResetPassword"); // 비밀번호 재설정 페이지로 이동
   };
 
-  if (!isAuthenticated) {
-    return <p>비밀번호 재설정을 위해 로그인해 주세요.</p>;
+  if (!userInfo && !message) {
+    return <div>로딩 중...</div>; // 사용자 정보 로딩 중
   }
 
   return (
-    <div className="user-container">
-      <h2>비밀번호 재설정</h2>
-      <form onSubmit={handlePasswordChange}>
-        <input
-          type="password"
-          placeholder="현재 비밀번호"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="새 비밀번호"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="새 비밀번호 확인"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
-        <button type="submit" className="change-password-button">비밀번호 변경</button>
-      </form>
-      {message && <p>{message}</p>}
+    <div className="user-page-container">
+      <h2>사용자 정보</h2>
+      {message && <p className="user-message">{message}</p>}
+      {userInfo && (
+        <>
+          <p className="user-info"><strong>아이디 (이메일):</strong> {userInfo.email}</p>
+          <p className="user-info"><strong>출생년도:</strong> {userInfo.birthyear}</p>
+          <p className="user-info"><strong>성별:</strong> {userInfo.sex ? "남성" : "여성"}</p>
+          <button className="user-button reset-password-button" onClick={handlePasswordReset}>비밀번호 변경</button>
+        </>
+      )}
     </div>
   );
 };

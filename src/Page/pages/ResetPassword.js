@@ -20,7 +20,7 @@ const ResetPassword = () => {
       return;
     }
 
-    if (newPassword.length <= 8) {
+    if (newPassword.length < 8) {
       setError("새 비밀번호는 8자 이상이어야 합니다.");
       return;
     }
@@ -48,6 +48,8 @@ const ResetPassword = () => {
       } else if (response.status === 403) {
         setError("토큰이 유효하지 않습니다. 다시 로그인 해주세요.");
         navigate("/login"); // 토큰이 유효하지 않은 경우 로그인 페이지로 이동
+      } else if (response.status === 422) {
+        setError("새 비밀번호는 8자 이상이어야 합니다.");
       } else {
         setError("비밀번호 재설정 중 오류가 발생했습니다.");
       }
