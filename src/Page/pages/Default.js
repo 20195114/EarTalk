@@ -187,7 +187,7 @@ const Default = () => {
           <>
             <textarea
               className="text-area"
-              placeholder="여기에 텍스트를 입력하거나, 아래 버튼을 눌러 녹음을 시작하세요."
+              placeholder="여기에 텍스트를 입력하거나, 아래 버튼을 눌러 녹음을 시작하세요. 사용자의 음성 녹음 전적이 없다면 음성이 사용자 목소리로 제공되기 어렵습니다.  "
               value={inputText}
               onChange={handleTextChange}
               disabled={!isAuthenticated || isProcessing}

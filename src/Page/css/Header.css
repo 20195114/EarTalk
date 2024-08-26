@@ -3,9 +3,13 @@
   justify-content: center; /* 로고를 화면 중앙에 정렬 */
   align-items: center;
   position: relative;
-  width: 100%;
+  width: 100%; /* 고정된 너비 대신 100%로 설정 */
+  max-width: 1200px; /* 최대 너비를 1200px로 설정 */
+  min-width: 1200px; /* 최소 너비를 1200px로 설정 */
   box-sizing: border-box;
   background-color: #FDDA44; /* 배경색 통일 */
+  padding: 10px; /* 패딩을 추가하여 여유 공간 확보 */
+  margin: 0 auto; /* 화면 중앙에 정렬 */
 }
 
 .logo-container {
@@ -13,20 +17,20 @@
   flex-direction: column; /* 로고와 텍스트를 세로로 배치 */
   align-items: center;
   cursor: pointer;
-  margin-left: auto;
-  margin-right: auto; /* 로고가 가운데 오도록 중앙 정렬 */
   background-color: #FDDA44 !important;
   padding: 20px; /* 패딩 추가 */
+  max-width: 100%; /* 부모 요소의 너비를 초과하지 않도록 설정 */
 }
 
 .logo {
-  height: 80px;
+  height: 80px; /* 고정 높이 */
+  max-height: 80px; /* 최대 높이 설정 */
   margin-bottom: 5px; /* 로고와 텍스트 사이 간격 조절 */
   background-color: #FDDA44; /* 배경색 통일 */
 }
 
 .logo-text {
-  font-size: 20px;
+  font-size: 20px; /* 고정 글자 크기 */
   margin: 0px;
   background-color: #FDDA44; /* 배경색 통일 */
 }
@@ -35,22 +39,22 @@
   background-color: #6b6b6b;
   border-radius: 5px;
   border: none;
-  font-size: 14px;
+  font-size: 14px; /* 고정 글자 크기 */
   cursor: pointer;
   display: flex;
   align-items: center;
   position: absolute;
-  top: 10px;
-  right: 20px;
+  top: 10px; /* 고정 위치 */
+  right: 20px; /* 고정 위치 */
   color: white;
-  padding: 10px;
+  padding: 10px; /* 고정 패딩 */
   transition: all 0.3s ease; /* 애니메이션 효과 */
 }
 
 .user-icon {
-  font-size: 24px;
+  font-size: 24px; /* 고정 아이콘 크기 */
   cursor: pointer;
-  margin-right: 10px;
+  margin-right: 10px; /* 간격 조정 */
   transition: all 0.3s ease; /* 애니메이션 효과 */
 }
 
@@ -58,7 +62,7 @@
   position: fixed;
   top: 20%;
   right: 20%;
-  width: 300px;
+  width: 300px; /* 고정 너비 */
   background: white;
   border: 1px solid #ccc;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -77,7 +81,7 @@
 }
 
 .close-button {
-  background-color: #FDDA44; /* 배경색 통일 */
+  background-color: #FDDA44 !important; /* 배경색 통일, 우선순위 높이기 */
   color: white;
 }
 
@@ -87,7 +91,7 @@
 }
 
 .cancel-button {
-  background-color: #FDDA44; /* 배경색 통일 */
+  background-color: #FDDA44 !important; /* 배경색 통일, 우선순위 높이기 */
   color: white;
 }
 
@@ -100,8 +104,8 @@
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 70px; /* 버튼 바로 아래에 위치 */
-  right: 0;
+  top: calc(10px + 80px); /* 버튼 바로 아래에 위치 */
+  right: 20px;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -110,12 +114,12 @@
 }
 
 .user-menu-item {
-  padding: 10px 20px;
+  padding: 10px 20px; /* 고정 패딩 */
   cursor: pointer;
   background-color: white;
   border: none;
   text-align: left;
-  font-size: 14px;
+  font-size: 14px; /* 고정 글자 크기 */
   display: flex;
   align-items: center;
 }
@@ -128,45 +132,81 @@
   background-color: #f1f1f1;
 }
 
-/* 반응형 웹 디자인 */
-@media only screen and (max-width: 768px) {
+/* 중간 크기의 화면(태블릿 및 작은 노트북)을 위한 미디어 쿼리 */
+@media screen and (min-width: 769px) and (max-width: 1199px) {
+  .ear-talk-header {
+    min-width: 1100px; /* 중간 화면에서 최소 너비를 1100px로 설정 */
+    max-width: 1100px; /* 최대 너비는 1100px로 설정 */
+    padding: 15px; /* 패딩을 조금 늘림 */
+    flex-direction: row; /* 중간 화면에서는 로고와 버튼을 나란히 배치 */
+  }
+
   .logo {
-    height: 60px; /* 로고 크기 조정 */
+    height: 75px; /* 로고 크기 조정 */
+    max-height: 75px; /* 최대 높이도 조정 */
   }
 
   .logo-text {
-    font-size: 18px; /* 로고 텍스트 크기 조정 */
+    font-size: 19px; /* 글자 크기 조정 */
   }
 
   .login-button {
-    font-size: 12px;
-    top: 10px;
-    right: 10px;
-    padding: 8px;
+    font-size: 14px; /* 글자 크기 조정 */
+    top: 10px; /* 위치 조정 */
+    right: 15px; /* 위치 조정 */
+    padding: 10px; /* 패딩 조정 */
   }
 
   .user-icon {
-    font-size: 20px; /* 아이콘 크기 조정 */
+    font-size: 23px; /* 아이콘 크기 조정 */
+  }
+
+  .user-menu {
+    top: calc(10px + 75px); /* 위치 조정 */
+    right: 15px; /* 위치 조정 */
+  }
+
+  .user-menu-item {
+    font-size: 14px; /* 글자 크기 조정 */
+    padding: 10px 20px; /* 패딩 조정 */
   }
 }
 
-@media only screen and (max-width: 480px) {
+/* 모바일 화면을 위한 미디어 쿼리 */
+@media screen and (max-width: 768px) {
+  .ear-talk-header {
+    min-width: 100%; /* 모바일 환경에서 전체 너비로 설정 */
+    padding: 10px; /* 여전히 패딩 유지 */
+    flex-direction: column; /* 모바일에서는 열 방향으로 배치 */
+  }
+
   .logo {
-    height: 50px; /* 로고 크기 조정 */
+    height: 60px; /* 로고 크기 줄이기 */
+    max-height: 60px; /* 최대 높이도 줄이기 */
   }
 
   .logo-text {
-    font-size: 16px; /* 로고 텍스트 크기 조정 */
+    font-size: 16px; /* 글자 크기 줄이기 */
   }
 
   .login-button {
-    font-size: 12px;
-    top: 5px;
-    right: 5px;
-    padding: 6px;
+    font-size: 12px; /* 글자 크기 줄이기 */
+    top: 5px; /* 위치 조정 */
+    right: 10px; /* 위치 조정 */
+    padding: 8px; /* 패딩 줄이기 */
   }
 
   .user-icon {
-    font-size: 18px; /* 아이콘 크기 조정 */
+    font-size: 20px; /* 아이콘 크기 줄이기 */
+  }
+
+  .user-menu {
+    top: calc(5px + 60px); /* 위치 조정 */
+    right: 10px; /* 위치 조정 */
+  }
+
+  .user-menu-item {
+    font-size: 12px; /* 글자 크기 줄이기 */
+    padding: 8px 16px; /* 패딩 줄이기 */
   }
 }

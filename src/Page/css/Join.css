@@ -7,6 +7,8 @@
   height: 100vh;
   box-sizing: border-box;
   justify-content: center;
+  max-width: 1200px !important; /* 전체 화면의 최대 너비를 1200px로 제한 */
+  margin: 0 auto !important; /* 화면 중앙에 정렬 */
 }
 
 .logo {
@@ -14,50 +16,89 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 20px !important;
 }
 
 .logo-image {
-  width: 100px;
-  height: auto;
-  margin-bottom: 10px; /* 로고 이미지와 텍스트 사이 간격 */
+  width: 100px !important;
+  height: auto !important;
+  margin-bottom: 10px !important; /* 로고 이미지와 텍스트 사이 간격 */
 }
 
 .logo-text {
-  font-size: 24px;
-  font-weight: bold;
-  color: #ffffff;
+  font-size: 24px !important;
+  font-weight: bold !important;
+  color: #ffffff !important;
 }
 
 .join-form {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 300px;
+  width: 100% !important;
+  max-width: 100% !important; /* 부모 요소인 .join-container의 너비를 따라감 */
+  box-sizing: border-box !important; /* 패딩과 보더를 포함하여 너비 계산 */
 }
 
 .join-input {
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
+  padding: 10px !important;
+  margin-bottom: 10px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 5px !important;
+  font-size: 14px !important;
 }
 
 .join-button {
-  background-color: #6b6b6b;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  background-color: #6b6b6b !important;
+  color: white !important;
+  padding: 10px !important;
+  border: none !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  font-size: 16px !important;
+  margin-top: 10px !important;
+  margin-bottom: 20px !important;
+  width: 100% !important; /* 버튼이 부모 요소의 너비를 따라가도록 설정 */
 }
 
 .error-message {
-  color: red;
-  font-size: 12px;
-  text-align: center;
+  color: red !important;
+  font-size: 12px !important;
+  text-align: center !important;
+}
+
+/* 중간 크기의 화면(태블릿 및 작은 노트북)을 위한 미디어 쿼리 */
+@media only screen and (min-width: 769px) and (max-width: 1199px) {
+  .join-container {
+    max-width: 1200px !important; /* 중간 크기 화면에서도 최대 너비를 1200px로 유지 */
+    padding: 30px !important; /* 패딩을 조금 더 늘림 */
+  }
+
+  .join-form {
+    max-width: 100% !important; /* 부모 요소의 너비에 맞춤 */
+  }
+}
+
+/* 작은 화면(모바일)을 위한 미디어 쿼리 */
+@media only screen and (max-width: 768px) {
+  .join-container {
+    max-width: 90% !important; /* 작은 화면에서 최대 너비를 90%로 설정 */
+    padding: 15px !important; /* 작은 화면에서는 패딩을 줄임 */
+  }
+
+  .join-form {
+    max-width: 100% !important; /* 부모 요소의 너비에 맞춤 */
+  }
+
+  .logo-image {
+    width: 80px !important; /* 작은 화면에서 로고 크기 줄이기 */
+  }
+
+  .logo-text {
+    font-size: 20px !important; /* 작은 화면에서 텍스트 크기 줄이기 */
+  }
+
+  .join-button {
+    font-size: 14px !important; /* 버튼 글자 크기 줄이기 */
+    padding: 8px !important; /* 패딩 줄이기 */
+  }
 }

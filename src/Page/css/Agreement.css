@@ -1,88 +1,136 @@
 body, html {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #fdda44; 
-    font-family: Arial, sans-serif;
-  }
-  
+  height: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fdda44; 
+  font-family: Arial, sans-serif;
+}
+
+.agreement-container {
+  max-width: 600px;
+  width: 100%;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.agreement-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.agreement-check-all {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.agreement-check-all input {
+  margin-right: 10px;
+}
+
+.separator {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 15px 0;
+}
+
+.agreement-section {
+  margin-bottom: 15px;
+}
+
+.agreement-section input {
+  margin-right: 10px;
+}
+
+.terms-content {
+  margin-left: 25px;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.agreement-info {
+  font-size: 12px;
+  color: #999;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.agreement-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.agree-button, .cancel-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 45%;
+}
+
+.agree-button {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+.cancel-button {
+  background-color: #ddd;
+  color: #333;
+}
+
+/* 반응형 웹 디자인 */
+@media only screen and (max-width: 768px) {
   .agreement-container {
-    max-width: 600px;
-    width: 100%;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    max-width: 70%; /* 컨테이너 너비 조절 */
+    margin: 0 auto; /* 화면 중앙에 위치 */
   }
-  
-  .agreement-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .agreement-check-all {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .agreement-check-all input {
-    margin-right: 10px;
-  }
-  
-  .separator {
-    border: none;
-    border-top: 1px solid #ddd;
-    margin: 15px 0;
-  }
-  
-  .agreement-section {
-    margin-bottom: 15px;
-  }
-  
-  .agreement-section input {
-    margin-right: 10px;
-  }
-  
+
   .terms-content {
-    margin-left: 25px;
-    padding: 10px;
-    background-color: #f7f7f7;
-    border-radius: 5px;
-    font-size: 14px;
-    color: #555;
+    margin-left: 15px;
+    padding: 8px;
+    font-size: 13px; /* 글자 크기 조절 */
   }
-  
-  .agreement-info {
-    font-size: 12px;
-    color: #999;
-    margin-top: 20px;
-    text-align: center;
-  }
-  
+
   .agreement-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    flex-direction: column; /* 버튼을 세로로 배치 */
+    gap: 10px; /* 버튼 사이 간격 */
   }
-  
+
   .agree-button, .cancel-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 45%;
+    width: 100%; /* 버튼 너비 조절 */
+    padding: 12px 0; /* 버튼 높이 조절 */
   }
-  
-  .agree-button {
-    background-color: #ffc107;
-    color: #fff;
+}
+
+@media only screen and (max-width: 480px) {
+  .agreement-container {
+    padding: 10px;
+    max-width: 90%; /* 컨테이너 너비 조절 */
+    margin: 0 auto; /* 화면 중앙에 위치 */
   }
-  
-  .cancel-button {
-    background-color: #ddd;
-    color: #333;
+
+  .terms-content {
+    margin-left: 10px;
+    padding: 7px;
+    font-size: 12px; /* 글자 크기 조절 */
   }
-  
+
+  .agreement-buttons {
+    flex-direction: column; /* 버튼을 세로로 배치 */
+    gap: 10px; /* 버튼 사이 간격 */
+  }
+
+  .agree-button, .cancel-button {
+    width: 100%; /* 버튼 너비 조절 */
+    padding: 10px 0; /* 버튼 높이 조절 */
+  }
+}
