@@ -100,6 +100,7 @@ const Join = () => {
         <h1 className="logo-text">이어톡</h1>
       </div>
       <form className="join-form" onSubmit={handleSubmit}>
+      <h2 className="Join-text">회원가입</h2>
         <input
           type="email"
           name="email"

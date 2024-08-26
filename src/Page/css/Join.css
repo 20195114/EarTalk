@@ -7,7 +7,7 @@
   height: 100vh;
   box-sizing: border-box;
   justify-content: center;
-  max-width: 1200px !important; /* 전체 화면의 최대 너비를 1200px로 제한 */
+  width: 400px !important; /* 전체 화면의 최대 너비를 1200px로 제한 */
   margin: 0 auto !important; /* 화면 중앙에 정렬 */
 }
 
@@ -39,6 +39,9 @@
   box-sizing: border-box !important; /* 패딩과 보더를 포함하여 너비 계산 */
 }
 
+.Join-text {
+  color:  #6b6b6b  !important;
+}
 .join-input {
   padding: 10px !important;
   margin-bottom: 10px !important;
