@@ -18,8 +18,9 @@
   align-items: center;
   cursor: pointer;
   background-color: #FDDA44 !important;
-  padding: 20px; /* 패딩 추가 */
+  padding: 10px; /* 패딩 추가 */
   max-width: 100%; /* 부모 요소의 너비를 초과하지 않도록 설정 */
+  
 }
 
 .logo {
@@ -70,7 +71,7 @@
   align-items: center; /* 아이콘을 수직 중앙 정렬 */
   position: absolute;
   top: 40px; /* 고정 위치 */
-  right: 10px; /* 고정 위치 */
+  right: 15px; /* 고정 위치 */
   color: white;
   width: 40px; /* 고정된 너비 */
   height: 40px; /* 고정된 높이 */
@@ -179,7 +180,7 @@
   .menu-button {
     font-size: 14px; /* 글자 크기 조정 */
     top: 10px; /* 위치 조정 */
-    right: 15px; /* 위치 조정 */
+    right: 20px; /* 위치 조정 */
     padding: 10px; /* 패딩 조정 */
   }
 

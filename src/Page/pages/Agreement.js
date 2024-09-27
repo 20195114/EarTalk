@@ -17,10 +17,10 @@ const Agreement = () => {
 
   const handleSubmit = () => {
     if (termsChecked && privacyChecked) {
-      alert("You have agreed to all the terms.");
+      alert("모든 약관에 동의하셨습니다.");
       navigate('/join'); 
     } else {
-      alert("Please agree to all required terms.");
+      alert("모든 필수 약관에 동의해 주세요.");
     }
   };
 
