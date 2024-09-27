@@ -33,7 +33,7 @@ function App() {
           <Route path="/record" element={<Record />} />
           <Route path="/user" element={<User />} />
           <Route path="/fpassword" element={<Fpassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/agreement" element={<Agreement />} />  {/* 소문자로 변경 */}
         </Routes>
     </AuthContext.Provider>

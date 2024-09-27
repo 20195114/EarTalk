@@ -35,9 +35,8 @@
 }
 
 .wav-list {
-  width: 100%;
+  width: 1000px;
   height: 100%;
-  max-width: 1000px; /* 리스트의 최대 너비를 설정 */
   background-color: white;
   padding: 10px 10px 0px 10px; /* 윗 패딩 제거 */
   display: flex;
@@ -123,8 +122,7 @@
   }
 
   .wav-list {
-    width: 70%; /* WAV 리스트의 폭을 조정 */
-    max-width: 800px;
+    width: 600px; /* WAV 리스트의 폭을 조정 */
     padding-top: 30%;
     align-items: center;
   }
@@ -167,8 +165,7 @@
   }
 
   .wav-list {
-    width: 100%; /* 리스트의 폭을 전체 화면으로 설정 */
-    max-width: none;
+    width: 350px; /* 리스트의 폭을 전체 화면으로 설정 */
     padding-top: 35%;
     align-items: center;
   }

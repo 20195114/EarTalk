@@ -49,7 +49,7 @@
   transition: background-color 0.3s ease;
   margin-right: 90%;
   position: relative;
-  top: -25px; /* 버튼을 아래로 내림 */
+  top: 20px; /* 버튼을 아래로 내림 */
 }
 
 .convert-button:hover {
@@ -128,7 +128,7 @@
   right: 40px;
   display: flex;
   align-items: center;
-  top: 510px; /* 아이콘을 아래로 내림 */
+  top: 530px; /* 아이콘을 아래로 내림 */
 }
 
 /* 로그인 상태에서 icon-container 위치 조정 */
@@ -169,6 +169,133 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   color: #333;
   font-size: 18px;
+}
+
+.privacy-policy-modal-li {
+  margin-top: 20px;
+}
+.privacy-policy-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50vh; /* 모달의 높이를 50%에서 필요에 따라 조정할 수 있습니다 */
+  background-color: white;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s ease-in-out;
+  overflow: hidden; /* 모달 전체에서는 overflow를 숨김 처리 */
+  flex-direction: column; /* 내용을 위아래로 정렬 */
+}
+
+.privacy-policy-modal.open {
+  transform: translateY(0); /* 열릴 때 위치 조정 */
+}
+
+.privacy-policy-header {
+  flex-shrink: 0; /* 헤더는 크기를 유지 */
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  padding-left: 40px;
+  border-bottom: 1px solid #ddd;
+}
+
+.privacy-policy-body {
+  max-height: 250px; /* 최대 높이 설정 */
+  overflow-y: auto; /* 내용이 많을 경우 스크롤 생성 */
+  flex-grow: 1; /* 남은 공간 모두 사용 */
+  height: calc(100% - 50px); /* 헤더 높이를 제외한 나머지 부분에 대해 높이 계산 */
+  padding: 40px;
+}
+
+.close-button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+/* 알림창 스타일 */
+.recording-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.9); /* 반투명한 배경 */
+  width: 360px;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 닫기 버튼 스타일 */
+.recording-modal .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* 녹음 중단 버튼 스타일 */
+.recording-modal .stop-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.recording-modal .stop-button:hover {
+  background-color: #ff3333;
+}
+
+/* 알림창 내 텍스트 스타일 */
+.recording-modal p {
+  font-size: 16px;
+  text-align: center;
+  color: #333;
+  margin: 20px 0;
+}
+
+.playback-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  width: 300px;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.recording-alert {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #FDDA44;
+  padding: 10px;
 }
 
 /* 반응형 웹 디자인 */
@@ -230,7 +357,7 @@
 @media only screen and (max-width: 480px) {
   .ear-talk-main {
     width: 90vw;
-    height: 60vh;
+    height: 70vh;
   }
 
   .text-area {
@@ -258,7 +385,7 @@
     width: 60px;
     height: 65px;
     font-size: 24px;
-    top: 10px;
+    top: 0px;
   }
 
   .record-button.logged-in {
@@ -269,7 +396,7 @@
   }
 
   .icon-container {
-    top: 350px;
+    top: 390px;
     right: 30px;
   }
 

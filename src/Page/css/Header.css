@@ -119,29 +119,46 @@
 
 .logout-confirm-modal {
   position: fixed;
-  top: 20%;
-  right: 20%;
-  width: 300px; /* 고정 너비 */
-  background: white;
-  border: 1px solid #ccc;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명한 검은색 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 화면 최상단에 표시되도록 z-index 설정 */
 }
 
 .logout-confirm-content {
+  background-color: white;
   padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 300px; /* 알림창 크기 설정 */
 }
 
-.close-button, .confirm-button, .cancel-button, .reset-password-button {
-  margin-top: 10px;
-  padding: 10px;
+.logout-confirm-content p {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.logout-buttons {
+  display: flex;
+  justify-content: space-between; /* 버튼을 좌우로 나란히 배치 */
+  gap: 10px; /* 버튼 사이 간격 */
+}
+
+.confirm-button, .cancel-button {
+  flex: 1; /* 버튼을 동일한 크기로 설정 */
+  padding: 10px 0;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
-}
-
-.close-button {
-  background-color: #FDDA44 !important; /* 배경색 통일, 우선순위 높이기 */
-  color: white;
+  font-size: 16px;
 }
 
 .confirm-button {
@@ -150,14 +167,18 @@
 }
 
 .cancel-button {
-  background-color: #FDDA44 !important; /* 배경색 통일, 우선순위 높이기 */
+  background-color: #f44336;
   color: white;
 }
 
-.reset-password-button {
-  background-color: #2196f3;
-  color: white;
+.confirm-button:hover {
+  background-color: #45a049;
 }
+
+.cancel-button:hover {
+  background-color: #e60000;
+}
+
 
 /* 중간 크기의 화면(태블릿 및 작은 노트북)을 위한 미디어 쿼리 */
 @media screen and (min-width: 769px) and (max-width: 1199px) {
@@ -196,6 +217,16 @@
   .user-menu-item {
     font-size: 14px; /* 글자 크기 조정 */
     padding: 10px 20px; /* 패딩 조정 */
+  }
+
+  .logout-buttons {
+    display: flex;
+    justify-content: space-between; /* 버튼을 좌우로 나란히 배치 */
+    gap: 10px; /* 버튼 사이 간격 */
+  }
+
+  .confirm-button, .cancel-button {
+    font-size: 14px; /* 중간 화면에서 글자 크기 조정 */
   }
 }
 
@@ -248,4 +279,24 @@
     font-size: 12px; /* 글자 크기 줄이기 */
     padding: 8px 16px; /* 패딩 줄이기 */
   }
+
+  @media screen and (max-width: 480px) {
+    .logout-confirm-content {
+      width: 60%; /* 아주 작은 화면에서 알림창 더 작게 설정 */
+      justify-content: space-between; /* 버튼을 좌우로 나란히 배치 */
+      gap: 10px; /* 버튼 사이 간격 */
+    }
+  
+    .confirm-button, .cancel-button {
+      font-size: 12px; /* 작은 화면에서 글자 크기 줄이기 */
+      padding: 10px; /* 버튼 패딩 줄이기 */
+      justify-content: space-between; /* 버튼을 좌우로 나란히 배치 */
+      width: 50px;
+    }
+  
+    .logout-confirm-content p {
+      font-size: 16px; /* 작은 화면에서 글자 크기 줄이기 */
+    }
+  }
+
 }
