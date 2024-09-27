@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import '../css/User.css';
 import { AuthContext } from '../../App';  
+import logo from '../URL/EarTalkLOGO.png';
 
 const User = () => {
   const { isAuthenticated, authToken } = useContext(AuthContext);
@@ -37,6 +38,10 @@ const User = () => {
         });
     }
   }, [isAuthenticated, authToken, navigate]);
+  
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
   const handlePasswordReset = () => {
     navigate("/ResetPassword"); // 비밀번호 재설정 페이지로 이동
@@ -47,15 +52,22 @@ const User = () => {
   }
 
   return (
+    <div className="User">
+    <div className="logo-container">
+    <img src={logo} alt="이어톡 로고" onClick={handleLogoClick} className="logo-image" />
+    <h1 className="logo-text">이어톡</h1>
+  </div>
     <div className="user-page-container">
       <h2>사용자 정보</h2>
       {message && <p className="user-message">{message}</p>}
       <p className="user-info"><strong>아이디 (이메일):</strong> {userInfo.email}</p>
       <p className="user-info"><strong>출생년도:</strong> {userInfo.birthyear}</p>
-      <p className="user-info"><strong>성별:</strong> {userInfo.sex ? "남성" : "여성"}</p>
+      <p className="user-info"><strong>성별:</strong> {userInfo.sex === null ? "비공개" : userInfo.sex ? "남성" : "여성"}</p>
       <button className="user-button reset-password-button" onClick={handlePasswordReset}>비밀번호 변경</button>
+    </div>
     </div>
   );
 };
 
 export default User;
+
