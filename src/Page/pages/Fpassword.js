@@ -37,10 +37,14 @@ const Fpassword = () => {
     }
   };
 
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
     <div className="fpassword-container">
       <div className="logo-container">
-        <img src={logo} alt="이어톡 로고" className="logo-image" />
+        <img src={logo} alt="이어톡 로고" onClick={handleLogoClick} className="logo-image" />
         <h1 className="logo-text">이어톡</h1>
       </div>
     
@@ -53,7 +57,7 @@ const Fpassword = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <button type="submit" className="fpassword-button">비밀번호 재설정 링크 보내기</button>
+        <button type="submit" className="fpassword-button"> 임시 비밀번호 발급받기</button>
       </form>
       {message && <p className="fpassword-message success">{message}</p>}
       {error && <p className="fpassword-message error">{error}</p>}

@@ -9,7 +9,7 @@ body, html {
 }
 
 .agreement-container {
-  max-width: 600px;
+  max-width: 670px;
   width: 100%;
   padding: 20px;
   background-color: #fff;
@@ -53,6 +53,8 @@ body, html {
   border-radius: 5px;
   font-size: 14px;
   color: #555;
+  max-height: 150px; /* 최대 높이 설정 */
+  overflow-y: auto; /* 내용이 길어지면 스크롤 추가 */
 }
 
 .agreement-info {
@@ -62,23 +64,16 @@ body, html {
   text-align: center;
 }
 
-.agreement-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
 .agree-button, .cancel-button {
-  padding: 10px 20px;
+  background-color: #ffc107;
+  color: #fff;
+  padding: 12px 0; /* 버튼 높이 동일 */
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 45%;
-}
-
-.agree-button {
-  background-color: #ffc107;
-  color: #fff;
+  width: 48%; /* 버튼 너비 동일 */
+  margin-left: 6px;
+  margin-right: 6px;
 }
 
 .cancel-button {
@@ -98,6 +93,7 @@ body, html {
     margin-left: 15px;
     padding: 8px;
     font-size: 13px; /* 글자 크기 조절 */
+    max-height: 120px; /* 모바일에서 최대 높이 조절 */
   }
 
   .agreement-buttons {
@@ -122,6 +118,7 @@ body, html {
     margin-left: 10px;
     padding: 7px;
     font-size: 12px; /* 글자 크기 조절 */
+    max-height: 100px; /* 더 작은 화면에서 최대 높이 조절 */
   }
 
   .agreement-buttons {
