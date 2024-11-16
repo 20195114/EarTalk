@@ -60,6 +60,13 @@ body, html {
   margin-right: 5px;
 }
 
+.terms-content li {
+  margin-bottom: 10px; /* 리스트 항목 간 간격 */
+  line-height: 1.8; /* 줄 간격 설정 */
+  padding-left: 15px; 
+  margin-right: 10px;
+}
+
 .agreement-info {
   font-size: 11px;
   color: #999;
