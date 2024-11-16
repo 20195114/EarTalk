@@ -14,6 +14,8 @@ const Join = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL || 'https://eartalk.site:17004';
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -53,7 +55,7 @@ const Join = () => {
         sex: formData.gender === "male",
       };
 
-      const response = await fetch('/users/signup', {
+      const response = await fetch(`${BASE_URL}/api/users/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,19 +64,22 @@ const Join = () => {
       });
 
       if (response.ok) {
-        navigate('/login'); // 회원가입 성공 시 로그인 페이지로 이동
-      } else if (response.status === 400) {
-        setError("해당 이메일을 사용하는 사용자가 이미 존재하거나 비밀번호가 일치하지 않습니다.");
-      } else if (response.status === 422) {
-        setError("비밀번호는 8자 이상이어야 합니다.");
+        navigate('/login');
       } else {
         const errorData = await response.json();
-        setError(`회원가입 실패: ${errorData.detail}`);
+        if (response.status === 400) {
+          setError("해당 이메일을 사용하는 사용자가 이미 존재합니다.");
+        } else if (response.status === 422) {
+          setError("입력값이 올바르지 않습니다.");
+        } else {
+          setError(`회원가입 실패: ${errorData.detail || '알 수 없는 오류가 발생했습니다.'}`);
+        }
       }
     } catch (error) {
-      setError("회원가입 중 오류가 발생했습니다.");
+      setError("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
+  
 
   // 1900년부터 2024년까지의 년도 생성
   const renderYearOptions = () => {

@@ -11,12 +11,14 @@ const Login = () => {
   const { setIsAuthenticated, setAuthToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL || 'https://eartalk.site:17004';
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(""); // 이전 오류 메시지 초기화
 
     try {
-      const response = await fetch('https://eartalk.site:17004/api/login/access-token', {
+      const response = await fetch(`${BASE_URL}/api/login/access-token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'

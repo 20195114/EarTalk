@@ -152,6 +152,13 @@ body, html {
     font-size: 15px;
   }
 
+  .agreement-check-all {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    margin-right: 40px;
+  }
+
   .terms-content {
     margin-left: 10px;
     padding: 7px;
