@@ -5,7 +5,7 @@ import '../css/Record.css';
 import { AuthContext } from '../../App';
 
 const Record = () => {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, authToken } = useContext(AuthContext); // authToken 가져오기
   const [wavFiles, setWavFiles] = useState([]);
   const [visibleFiles, setVisibleFiles] = useState([]);
   const [showMore, setShowMore] = useState(true);
@@ -19,7 +19,7 @@ const Record = () => {
       fetch("/users/me/audios", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+          Authorization: `Bearer ${authToken}`, // authToken 사용
         },
       })
         .then((response) => {
@@ -45,7 +45,7 @@ const Record = () => {
         })
         .catch((error) => console.error("Error:", error));
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, authToken, navigate]);
 
   const handleShowMore = () => {
     const nextFiles = wavFiles.slice(visibleFiles.length, visibleFiles.length + 8);
@@ -107,6 +107,7 @@ const Record = () => {
 
 export default Record;
 
+
 // import React, { useEffect, useState, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 // import logo from '../URL/EarTalkLOGO.png';
@@ -140,7 +141,42 @@ export default Record;
 //         date: new Date().toLocaleDateString(),
 //         url: "/audio/sample3.wav"
 //       },
-//       // 더미 데이터 추가 가능
+//       {
+//         name: "sample4.wav",
+//         text: "네 번째 샘플 텍스트입니다.",
+//         date: new Date().toLocaleDateString(),
+//         url: "/audio/sample4.wav"
+//       },
+//       {
+//         name: "sample5.wav",
+//         text: "다섯 번째 샘플 텍스트입니다.",
+//         date: new Date().toLocaleDateString(),
+//         url: "/audio/sample5.wav"
+//       },
+//       {
+//         name: "sample6.wav",
+//         text: "여섯 번째 샘플 텍스트입니다.",
+//         date: new Date().toLocaleDateString(),
+//         url: "/audio/sample6.wav"
+//       },
+//       {
+//         name: "sample7.wav",
+//         text: "일곱 번째 샘플 텍스트입니다.",
+//         date: new Date().toLocaleDateString(),
+//         url: "/audio/sample7.wav"
+//       },
+//       {
+//         name: "sample8.wav",
+//         text: "여덟 번째 샘플 텍스트입니다.",
+//         date: new Date().toLocaleDateString(),
+//         url: "/audio/sample8.wav"
+//       },
+//       {
+//         name: "sample9.wav",
+//         text: "아홉 번째 샘플 텍스트입니다.",
+//         date: new Date().toLocaleDateString(),
+//         url: "/audio/sample9.wav"
+//       },
 //     ];
 
 //     setWavFiles(dummyData);
@@ -205,4 +241,3 @@ export default Record;
 // };
 
 // export default Record;
-//

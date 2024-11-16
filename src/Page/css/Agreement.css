@@ -51,20 +51,23 @@ body, html {
   padding: 10px;
   background-color: #f7f7f7;
   border-radius: 5px;
-  font-size: 14px;
+  font-size: 13px;
   color: #555;
   max-height: 150px; /* 최대 높이 설정 */
   overflow-y: auto; /* 내용이 길어지면 스크롤 추가 */
+  line-height: 1.8; /* 줄 간격 */
+  text-indent: -10px;
+  margin-right: 5px;
 }
 
 .agreement-info {
-  font-size: 12px;
+  font-size: 11px;
   color: #999;
   margin-top: 20px;
   text-align: center;
 }
 
-.agree-button, .cancel-button {
+.agree-button {
   background-color: #ffc107;
   color: #fff;
   padding: 12px 0; /* 버튼 높이 동일 */
@@ -74,12 +77,38 @@ body, html {
   width: 48%; /* 버튼 너비 동일 */
   margin-left: 6px;
   margin-right: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* 색상 및 애니메이션 효과 */
+}
+
+.cancel-button {
+  background-color: #ddd;
+  color: #333;
+  padding: 12px 0; /* 버튼 높이 동일 */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 48%; /* 버튼 너비 동일 */
+  margin-left: 6px;
+  margin-right: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* 색상 및 애니메이션 효과 */
 }
 
 .cancel-button {
   background-color: #ddd;
   color: #333;
 }
+
+/* 호버 시 동작 */
+.agree-button:hover {
+  background-color: #e6a600; /* 호버 시 색상 변경 */
+  transform: translateY(-2px); /* 살짝 위로 이동 */
+}
+
+.cancel-button:hover {
+  background-color: #bbb; /* 호버 시 색상 변경 */
+  transform: translateY(-2px); /* 살짝 위로 이동 */
+}
+
 
 /* 반응형 웹 디자인 */
 @media only screen and (max-width: 768px) {
@@ -94,16 +123,17 @@ body, html {
     padding: 8px;
     font-size: 13px; /* 글자 크기 조절 */
     max-height: 120px; /* 모바일에서 최대 높이 조절 */
+    text-indent: -10px;
   }
 
   .agreement-buttons {
-    flex-direction: column; /* 버튼을 세로로 배치 */
-    gap: 10px; /* 버튼 사이 간격 */
+    display: flex; /* 버튼을 가로로 배치 */
+    justify-content: space-between; /* 버튼 사이 간격 균등 */
   }
 
   .agree-button, .cancel-button {
-    width: 100%; /* 버튼 너비 조절 */
-    padding: 12px 0; /* 버튼 높이 조절 */
+    width: 48%; /* 버튼 너비 동일 */
+    padding: 12px 0; /* 버튼 높이 동일 */
   }
 }
 
@@ -112,6 +142,7 @@ body, html {
     padding: 10px;
     max-width: 90%; /* 컨테이너 너비 조절 */
     margin: 0 auto; /* 화면 중앙에 위치 */
+    font-size: 15px;
   }
 
   .terms-content {
@@ -119,15 +150,17 @@ body, html {
     padding: 7px;
     font-size: 12px; /* 글자 크기 조절 */
     max-height: 100px; /* 더 작은 화면에서 최대 높이 조절 */
+    line-height: 1.5; /* 줄 간격 축소 */
+    text-indent: -10px;
   }
 
   .agreement-buttons {
-    flex-direction: column; /* 버튼을 세로로 배치 */
-    gap: 10px; /* 버튼 사이 간격 */
+    display: flex; /* 버튼을 가로로 배치 */
+    justify-content: space-between; /* 버튼 사이 간격 균등 */
   }
 
   .agree-button, .cancel-button {
-    width: 100%; /* 버튼 너비 조절 */
+    width: 48%; /* 버튼 너비 동일 */
     padding: 10px 0; /* 버튼 높이 조절 */
   }
 }

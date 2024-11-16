@@ -16,14 +16,18 @@ const Login = () => {
     setError(""); // 이전 오류 메시지 초기화
 
     try {
-      const response = await fetch('/login/access-token', {
+      const response = await fetch('https://eartalk.site:17004/api/login/access-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: new URLSearchParams({
+          grant_type: 'password',
           username: email,
-          password: password
+          password: password,
+          scope: '',
+          client_id: 'string',
+          client_secret: 'string'
         })
       });
 
@@ -34,10 +38,12 @@ const Login = () => {
         setIsAuthenticated(true);
         navigate('/'); // 로그인 후 메인 페이지로 이동
       } else {
-        setError('로그인 실패: 잘못된 이메일 또는 비밀번호입니다.');
+        const errorData = await response.json();
+        setError(`로그인 실패: ${errorData.detail || '잘못된 이메일 또는 비밀번호입니다.'}`);
       }
     } catch (error) {
-      setError('로그인 중 오류가 발생했습니다.');
+      setError('로그인 중 네트워크 오류가 발생했습니다.');
+      console.error(error); // 디버깅용으로 콘솔에 오류 로그 출력
     }
   };
 

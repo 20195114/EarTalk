@@ -13,6 +13,17 @@
   }
 }
 
+@font-face {
+  font-family: 'KCC-Hanbit';
+  src: url('./assets/fonts/KCC-Hanbit.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'KCC-Hanbit', sans-serif;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

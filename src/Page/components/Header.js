@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../App';
 import logo from '../URL/EarTalkLOGO.png';
 import { FaUserCircle } from "react-icons/fa";
-import { IoMenu } from "react-icons/io5"; // 메뉴 아이콘 추가
+import { IoMenu } from "react-icons/io5";
 import axios from 'axios';
 import '../css/Header.css';
 
@@ -15,29 +15,31 @@ const Header = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const userMenuRef = useRef(null); // 드롭박스를 감지할 ref
+
   const handleLoginLogout = () => {
     if (!isAuthenticated) {
-      navigate('/Login'); // 로그인 페이지로 이동
+      navigate('/Login');
     } else {
-      setShowUserMenu(!showUserMenu); // 드롭다운 메뉴 표시/숨김 토글
+      setShowUserMenu(!showUserMenu);
     }
   };
 
   const confirmLogout = () => {
-    setShowLogoutConfirm(true); // 로그아웃 확인 알림창 표시
+    setShowLogoutConfirm(true);
+    setShowUserMenu(false);
   };
 
   const handleConfirmLogout = () => {
     setIsAuthenticated(false);
     setAuthToken(null);
-    sessionStorage.removeItem('access_token'); // 토큰 삭제
+    sessionStorage.removeItem('access_token');
     setShowLogoutConfirm(false);
-    setShowUserMenu(false);
-    navigate('/'); // 홈 페이지로 이동
+    navigate('/');
   };
 
   const handleCancelLogout = () => {
-    setShowLogoutConfirm(false); // 로그아웃 확인 알림창 닫기
+    setShowLogoutConfirm(false);
   };
 
   const handleLogoClick = () => {
@@ -55,9 +57,9 @@ const Header = () => {
         },
       });
       setAuthToken(response.data.access_token);
-      sessionStorage.setItem('access_token', response.data.access_token); // 토큰 저장
+      sessionStorage.setItem('access_token', response.data.access_token);
       setIsAuthenticated(true);
-      navigate('/'); // 로그인 후 홈으로 이동
+      navigate('/');
     } catch (error) {
       console.error('Login failed', error);
       alert('이메일 또는 비밀번호가 올바르지 않습니다.');
@@ -66,18 +68,33 @@ const Header = () => {
 
   const handlePasswordReset = () => {
     setShowUserMenu(false);
-    navigate('/ResetPassword'); // 비밀번호 재설정 페이지로 이동
+    navigate('/ResetPassword');
   };
 
   const handleRecordListClick = () => {
     setShowUserMenu(false);
-    navigate('/Record'); // 녹음 목록 페이지로 이동
+    navigate('/Record');
   };
 
   const handleUserInfoClick = () => {
     setShowUserMenu(false);
-    navigate('/User'); // User 페이지로 이동
+    navigate('/User');
   };
+
+  // 드롭박스 외부 클릭 감지
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setShowUserMenu(false); // 드롭박스 닫기
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="ear-talk-header">
@@ -85,7 +102,7 @@ const Header = () => {
         <img src={logo} alt="이어톡 로고" className="logo" />
         <h1 className="logo-text">이어톡</h1>
       </div>
-      <div className="user-menu-container">
+      <div className="user-menu-container" ref={userMenuRef}>
         {!isAuthenticated ? (
           <button className="login-button" onClick={handleLoginLogout}>
             <FaUserCircle className="user-icon" />
@@ -93,7 +110,7 @@ const Header = () => {
           </button>
         ) : (
           <button className="menu-button" onClick={handleLoginLogout}>
-            <IoMenu className="menu-icon" /> {/* IoMenu 아이콘 추가 */}
+            <IoMenu className="menu-icon" />
           </button>
         )}
 
@@ -102,7 +119,7 @@ const Header = () => {
             <button className="user-menu-item" onClick={handleUserInfoClick}>사용자 정보</button>
             <button className="user-menu-item" onClick={handlePasswordReset}>비밀번호 재설정</button>
             <button className="user-menu-item" onClick={handleRecordListClick}>녹음 목록</button>
-            <button className="user-menu-item" onClick={confirmLogout}>로그아웃</button> {/* 로그아웃 버튼 */}
+            <button className="user-menu-item" onClick={confirmLogout}>로그아웃</button>
           </div>
         )}
       </div>
@@ -111,8 +128,10 @@ const Header = () => {
         <div className="logout-confirm-modal">
           <div className="logout-confirm-content">
             <p>정말 로그아웃 하시겠습니까?</p>
-            <button className="confirm-button" onClick={handleConfirmLogout}>예</button>
-            <button className="cancel-button" onClick={handleCancelLogout}>아니오</button>
+            <div className="logout-buttons">
+              <button className="confirm-button" onClick={handleConfirmLogout}>예</button>
+              <button className="cancel-button" onClick={handleCancelLogout}>아니오</button>
+            </div>
           </div>
         </div>
       )}
@@ -122,83 +141,3 @@ const Header = () => {
 
 export default Header;
 
-
-// import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import logo from '../URL/EarTalkLOGO.png';
-// import { IoMenu } from "react-icons/io5"; // 메뉴 아이콘 추가
-// import '../css/Header.css';
-
-// const Header = () => {
-//   const navigate = useNavigate();
-//   const [showUserMenu, setShowUserMenu] = useState(false);
-//   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
-//   const handleLogoClick = () => {
-//     navigate('/');
-//   };
-
-//   const handleMenuToggle = () => {
-//     setShowUserMenu(!showUserMenu); // 드롭다운 메뉴 표시/숨김 토글
-//   };
-
-//   const handleLogoutClick = () => {
-//     setShowLogoutConfirm(true); // 로그아웃 확인 알림창 표시
-//     setShowUserMenu(false); // 메뉴 숨김
-//   };
-
-//   const confirmLogout = () => {
-//     setShowLogoutConfirm(false);
-//     navigate('/'); // 로그아웃 후 홈으로 이동
-//   };
-
-//   const handlePasswordReset = () => {
-//     setShowUserMenu(false);
-//     navigate('/ResetPassword'); // 비밀번호 재설정 페이지로 이동
-//   };
-
-//   const handleRecordListClick = () => {
-//     setShowUserMenu(false);
-//     navigate('/Record'); // 녹음 목록 페이지로 이동
-//   };
-
-//   const handleUserInfoClick = () => {
-//     setShowUserMenu(false);
-//     navigate('/User'); // 사용자 정보 페이지로 이동
-//   };
-
-//   return (
-//     <header className="ear-talk-header">
-//       <div className="logo-container" onClick={handleLogoClick}>
-//         <img src={logo} alt="이어톡 로고" className="logo" />
-//         <h1 className="logo-text">이어톡</h1>
-//       </div>
-//       <div className="user-menu-container">
-//         <button className="menu-button" onClick={handleMenuToggle}>
-//           <IoMenu className="menu-icon" /> {/* IoMenu 아이콘 추가 */}
-//         </button>
-
-//         {showUserMenu && (
-//           <div className="user-menu">
-//             <button className="user-menu-item" onClick={handleUserInfoClick}>사용자 정보</button>
-//             <button className="user-menu-item" onClick={handlePasswordReset}>비밀번호 재설정</button>
-//             <button className="user-menu-item" onClick={handleRecordListClick}>녹음 목록</button>
-//             <button className="user-menu-item" onClick={handleLogoutClick}>로그아웃</button> {/* 로그아웃 버튼 */}
-//           </div>
-//         )}
-//       </div>
-
-//       {showLogoutConfirm && (
-//         <div className="logout-confirm-modal">
-//           <div className="logout-confirm-content">
-//             <p>정말 로그아웃 하시겠습니까?</p>
-//             <button className="confirm-button" onClick={confirmLogout}>확인</button>
-//             <button className="cancel-button" onClick={() => setShowLogoutConfirm(false)}>취소</button>
-//           </div>
-//         </div>
-//       )}
-//     </header>
-//   );
-// };
-
-// export default Header;

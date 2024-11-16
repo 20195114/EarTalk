@@ -36,6 +36,11 @@
   resize: none; /* 크기 조정 불가 */
 }
 
+.text-area::placeholder {
+  color: #272525; /* 원하는 색상으로 설정 */
+  opacity: 1; /* 브라우저 기본 투명도를 무시하고 완전한 불투명도로 설정 */
+}
+
 /* 변환하기 버튼 */
 .convert-button {
   background-color: #ddd;
@@ -171,52 +176,28 @@
   font-size: 18px;
 }
 
-.privacy-policy-modal-li {
-  margin-top: 20px;
-}
-.privacy-policy-modal {
+/* 모달 배경 */
+.modal-overlay {
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
-  right: 0;
-  height: 50vh; /* 모달의 높이를 50%에서 필요에 따라 조정할 수 있습니다 */
-  background-color: white;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
-  transform: translateY(100%);
-  transition: transform 0.3s ease-in-out;
-  overflow: hidden; /* 모달 전체에서는 overflow를 숨김 처리 */
-  flex-direction: column; /* 내용을 위아래로 정렬 */
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  z-index: 999;
+  display: none; /* 기본적으로 숨김 */
 }
 
-.privacy-policy-modal.open {
-  transform: translateY(0); /* 열릴 때 위치 조정 */
+.modal-overlay.open {
+  display: block; /* 모달 열리면 표시 */
 }
 
-.privacy-policy-header {
-  flex-shrink: 0; /* 헤더는 크기를 유지 */
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  padding-left: 40px;
-  border-bottom: 1px solid #ddd;
-}
-
-.privacy-policy-body {
-  max-height: 250px; /* 최대 높이 설정 */
-  overflow-y: auto; /* 내용이 많을 경우 스크롤 생성 */
-  flex-grow: 1; /* 남은 공간 모두 사용 */
-  height: calc(100% - 50px); /* 헤더 높이를 제외한 나머지 부분에 대해 높이 계산 */
-  padding: 40px;
-}
-
-.close-button {
+.privacy-policy-link {
   cursor: pointer;
-  border: none;
-  background: none;
-  font-size: 24px;
-  margin-right: 10px;
+  color: #1C70EB;
+  text-decoration: underline;
+  font-size: 16px;
+  margin-top: 20px;
 }
 
 /* 알림창 스타일 */
@@ -303,6 +284,7 @@
   .ear-talk-main {
     width: 80vw;
     height: 70vh;
+    align-items: center;
   }
 
   .text-area {
@@ -357,7 +339,7 @@
 @media only screen and (max-width: 480px) {
   .ear-talk-main {
     width: 90vw;
-    height: 70vh;
+    height: 73vh;
   }
 
   .text-area {
@@ -374,7 +356,7 @@
   }
 
   .convert-button.logged-in {
-    top: 0px;
+    top: 10px;
     left: 20px;
     font-size: 16px;
     width: 80px;
@@ -383,7 +365,7 @@
 
   .record-button {
     width: 60px;
-    height: 65px;
+    height: 70px;
     font-size: 24px;
     top: 0px;
   }
@@ -401,10 +383,79 @@
   }
 
   .icon-container.logged-in {
-    top: 450px;
+    top: 383px;
   }
 
   .icon-button {
     font-size: 20px;
   }
+
+  /* 여기는 페이크 코드 */
+
+  .playback-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    width: 300px; /* 너비를 줄임 */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+  }
+  
+  .playback-content {
+    text-align: center;
+    width: 100%;
+  }
+  
+  .playback-content p {
+    font-size: 16px; /* 글씨 크기를 줄임 */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .playback-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; /* 버튼 간격 */
+    width: 100%; /* 버튼이 부모 너비를 채움 */
+  }
+  
+  .confirm-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 15px; /* 버튼 패딩 조정 */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* 글씨 크기를 작게 조정 */
+    flex: 1;
+  }
+  
+  .confirm-button:hover {
+    background-color: #d32f2f;
+  }
+  
+  .cancel-button {
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    padding: 10px 15px; /* 버튼 패딩 조정 */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* 글씨 크기를 작게 조정 */
+    flex: 1;
+  }
+  
+  .cancel-button:hover {
+    background-color: #bdbdbd;
+  }
+  
 }

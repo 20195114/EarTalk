@@ -1,190 +1,196 @@
 /* 유저 페이지 전용 스타일 */
 .user-page-container {
-    max-width: 700px;
-    margin: 20px auto; /* 패딩과 간격 통일 */
-    padding: 20px;
-    background-color: #fff; /* 배경색을 일관되게 흰색으로 */
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .user-page-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333; /* 텍스트 색상 통일 */
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
 }
 
 .user-message {
-    margin-bottom: 20px;
-    color: red;
-    text-align: center;
+  margin-bottom: 20px;
+  color: red;
+  text-align: center;
 }
 
 .user-info {
-    width: 100%;
-    font-size: 16px;
-    color: #333; /* 텍스트 색상 통일 */
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #FDDA44; /* 텍스트 박스 배경색 통일 */
-    border-radius: 5px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #FDDA44;
+  border-radius: 5px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.user-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    margin-top: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-}
-
-.user-button:hover {
-    background-color: #0056b3;
-}
-
+/* 비밀번호 변경 버튼 스타일 */
 .reset-password-button {
-    background-color: #4caf50; /* 비밀번호 변경 버튼을 더 돋보이게 */
+  width: 100%; /* 버튼 너비 */
+  padding: 10px; /* 버튼 패딩 */
+  font-size: 16px; /* 폰트 크기 */
+  background-color: #4caf50; /* 배경색 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 }
 
 .reset-password-button:hover {
-    background-color: #45a049;
+  background-color: #45a049;
+}
+
+/* 회원 탈퇴 버튼 스타일 */
+.delete-account-button {
+  width: 100%; /* 버튼 너비 */
+  height: 37px;
+  padding: 10px; /* 버튼 패딩 */
+  font-size: 16px; /* 폰트 크기 */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.delete-account-button:hover {
+  background-color: #0056b3;
 }
 
 /* 알림창의 배경이 되는 모달 */
 .delete-confirm-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명한 검은색 배경 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* 화면 최상단에 표시되도록 z-index 설정 */
-  }
-  
-  /* 알림창 박스 */
-  .delete-confirm-box {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    width: 300px; /* 알림창 크기 설정 */
-  }
-  
-  /* 알림창 텍스트 */
-  .delete-confirm-box p {
-    margin-bottom: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  /* 버튼들을 감싸는 컨테이너 */
-  .delete-confirm-buttons {
-    display: flex;
-    justify-content: space-between; /* 버튼들을 좌우로 배치 */
-  }
-  
-  /* 버튼 스타일 */
-  .confirm-button, .cancel-button {
-    width: 48%; /* 버튼이 같은 크기가 되도록 설정 */
-    padding: 10px 0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  /* 예 버튼 스타일 */
-  .confirm-button {
-    background-color: #ff4d4d; /* 빨간색 배경 */
-    color: white;
-  }
-  
-  /* 아니오 버튼 스타일 */
-  .cancel-button {
-    background-color: #ccc; /* 회색 배경 */
-    color: black;
-  }
-  
-  /* 예, 아니오 버튼 hover 스타일 */
-  .confirm-button:hover {
-    background-color: #e60000;
-  }
-  
-  .cancel-button:hover {
-    background-color: #999;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 알림창 박스 */
+.delete-confirm-box {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 300px;
+}
+
+/* 알림창 텍스트 */
+.delete-confirm-box p {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 버튼들을 감싸는 컨테이너 */
+.delete-confirm-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 예, 아니오 버튼 스타일 */
+.confirm-button, .cancel-button {
+  width: 48%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* 예 버튼 스타일 */
+.confirm-button {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+/* 아니오 버튼 스타일 */
+.cancel-button {
+  background-color: #ccc;
+  color: black;
+}
+
+/* 예, 아니오 버튼 hover 스타일 */
+.confirm-button:hover {
+  background-color: #e60000;
+}
+
+.cancel-button:hover {
+  background-color: #999;
+}
 
 /* 반응형 웹 디자인 */
 @media only screen and (max-width: 768px) {
-    .user-page-container {
-        width: 90%;
-        padding: 15px;
-    }
+  .user-page-container {
+      width: 90%;
+      padding: 15px;
+  }
 
-    .user-page-container h2 {
-        font-size: 20px;
-    }
+  .user-page-container h2 {
+      font-size: 20px;
+  }
 
-    .user-info {
-        font-size: 14px;
-        padding: 8px;
-    }
-
-    .user-button {
-        font-size: 14px;
-        padding: 8px;
-    }
-    .confirm-button, .cancel-button {
-        width: 90%; /* 버튼이 같은 크기가 되도록 설정 */
-        padding: 10px 0;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-      }
+  .user-info {
+      font-size: 14px;
+      padding: 8px;
+  }
+  
+  .confirm-button, .cancel-button {
+      width: 90%;
+      padding: 10px 0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+  }
 }
 
 @media only screen and (max-width: 480px) {
-    .user-page-container {
-        width: 100%;
-        padding: 10px;
-    }
+  .user-page-container {
+      width: 100%;
+      padding: 10px;
+  }
 
-    .user-page-container h2 {
-        font-size: 18px;
-    }
+  .user-page-container h2 {
+      font-size: 18px;
+  }
 
-    .user-info {
-        font-size: 12px;
-        padding: 6px;
-    }
+  .user-info {
+      font-size: 12px;
+      padding: 6px;
+  }
 
-    .user-button {
-        font-size: 12px;
-        padding: 6px;
-    }
-    .confirm-button, .cancel-button {
-        width: 100%; /* 버튼이 같은 크기가 되도록 설정 */
-        padding: 10px 0;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-      }
+  .confirm-button, .cancel-button {
+      width: 100%;
+      padding: 10px 0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+  }
 }
