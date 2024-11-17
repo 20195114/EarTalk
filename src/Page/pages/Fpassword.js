@@ -9,11 +9,13 @@ const Fpassword = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const API_BASE_URL = "https://eartalk.site:17004/api"; // API 기본 URL
+
   const handlePasswordReset = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`/reset-password/${email}`, {
+      const response = await fetch(`${API_BASE_URL}/reset-password/${encodeURIComponent(email)}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -22,16 +24,22 @@ const Fpassword = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setMessage(data.message);
+        setMessage(data.message || "임시 비밀번호가 이메일로 전송되었습니다.");
         setError(""); // 에러 메시지 초기화
-      } else if (response.status === 400) {
-        setError("해당 이메일을 사용하는 사용자가 없습니다.");
-        setMessage(""); // 성공 메시지 초기화
       } else {
-        setError("비밀번호 재설정 요청 중 오류가 발생했습니다.");
+        // 에러 상태에 따라 상세 메시지 처리
+        const errorData = await response.json();
+        if (response.status === 404) {
+          setError(errorData.detail || "등록되지 않은 이메일입니다.");
+        } else if (response.status === 422) {
+          setError("유효하지 않은 이메일 형식입니다.");
+        } else {
+          setError("비밀번호 재설정 요청 중 문제가 발생했습니다.");
+        }
         setMessage(""); // 성공 메시지 초기화
       }
     } catch (error) {
+      console.error("비밀번호 재설정 요청 중 오류:", error);
       setError("오류가 발생했습니다. 다시 시도해주세요.");
       setMessage(""); // 성공 메시지 초기화
     }
@@ -57,7 +65,7 @@ const Fpassword = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <button type="submit" className="fpassword-button"> 임시 비밀번호 발급받기</button>
+        <button type="submit" className="fpassword-button">임시 비밀번호 발급받기</button>
       </form>
       {message && <p className="fpassword-message success">{message}</p>}
       {error && <p className="fpassword-message error">{error}</p>}
