@@ -33,7 +33,7 @@ const Header = () => {
   const handleConfirmLogout = () => {
     setIsAuthenticated(false);
     setAuthToken(null);
-    sessionStorage.removeItem('access_token');
+    localStorage.removeItem('authToken'); // 로컬 스토리지에서 토큰 삭제
     setShowLogoutConfirm(false);
     navigate('/');
   };
@@ -47,8 +47,9 @@ const Header = () => {
   };
 
   const handleLoginSubmit = async () => {
+    const BASE_URL = process.env.REACT_APP_API_BASE_URL;
     try {
-      const response = await axios.post('/login/access-token', new URLSearchParams({
+      const response = await axios.post(`${BASE_URL}/login/access-token`, new URLSearchParams({
         username,
         password,
       }), {
@@ -57,7 +58,7 @@ const Header = () => {
         },
       });
       setAuthToken(response.data.access_token);
-      sessionStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('authToken', response.data.access_token); // 로컬 스토리지에 토큰 저장
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {
@@ -85,17 +86,16 @@ const Header = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
-        setShowUserMenu(false); // 드롭박스 닫기
+        setShowUserMenu(false);
       }
     };
-
+  
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
+  
   return (
     <header className="ear-talk-header">
       <div className="logo-container" onClick={handleLogoClick}>
@@ -140,4 +140,3 @@ const Header = () => {
 };
 
 export default Header;
-

@@ -7,7 +7,7 @@ const AuthProvider = ({ children }) => {
   const [authToken, setAuthToken] = useState(null);
 
   useEffect(() => {
-    const token = sessionStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken'); // 로컬 스토리지에서 토큰 가져오기
     if (token) {
       setAuthToken(token);
       setIsAuthenticated(true);
@@ -16,16 +16,16 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (authToken) {
-      sessionStorage.setItem('authToken', authToken);
+      localStorage.setItem('authToken', authToken); // 로컬 스토리지에 토큰 저장
     } else {
-      sessionStorage.removeItem('authToken');
+      localStorage.removeItem('authToken'); // 토큰이 없으면 로컬 스토리지에서 삭제
     }
   }, [authToken]);
 
   const logout = () => {
     setIsAuthenticated(false);
     setAuthToken(null);
-    sessionStorage.removeItem('authToken');
+    localStorage.removeItem('authToken'); // 로그아웃 시 로컬 스토리지에서 토큰 삭제
   };
 
   return (

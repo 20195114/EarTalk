@@ -1,55 +1,82 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from '../URL/EarTalkLOGO.png';
-import '../css/Record.css';
-import { AuthContext } from '../../App';
+import logo from "../URL/EarTalkLOGO.png";
+import "../css/Record.css";
+import { AuthContext } from "../../App";
 
 const Record = () => {
   const { isAuthenticated, authToken } = useContext(AuthContext); // authToken 가져오기
-  const [wavFiles, setWavFiles] = useState([]);
-  const [visibleFiles, setVisibleFiles] = useState([]);
-  const [showMore, setShowMore] = useState(true);
+  const [wavFiles, setWavFiles] = useState([]); // 모든 파일
+  const [visibleFiles, setVisibleFiles] = useState([]); // 표시할 파일
+  const [showMore, setShowMore] = useState(true); // 더보기 버튼 표시 여부
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+  const [errorMessage, setErrorMessage] = useState(null); // 에러 메시지
   const navigate = useNavigate();
-  const currentAudioRef = useRef(null); 
+  const currentAudioRef = useRef(null);
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:3000"; // API 기본 URL
 
   useEffect(() => {
     if (!isAuthenticated) {
+      console.warn("사용자가 인증되지 않았습니다. 로그인 페이지로 이동합니다.");
       navigate("/login");
-    } else {
-      fetch("/users/me/audios", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${authToken}`, // authToken 사용
-        },
-      })
-        .then((response) => {
-          if (response.status === 403) {
-            navigate('/Login');
-            throw new Error('토큰이 유효하지 않음');
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (data && data.data) {
-            const files = data.data.map(file => ({
-              name: file.original_filepath,
-              text: file.text || "텍스트가 없습니다.",
-              date: new Date(file.created_at).toLocaleDateString(),
-              url: file.processed_filepath
-            }));
-            setWavFiles(files);
-            setVisibleFiles(files.slice(0, 8));
-          } else {
-            console.error("Failed to load audio files");
-          }
-        })
-        .catch((error) => console.error("Error:", error));
+      return;
     }
-  }, [isAuthenticated, authToken, navigate]);
+  
+    const fetchAudioFiles = async () => {
+      setIsLoading(true); // 로딩 상태 시작
+      setErrorMessage(null); // 이전 에러 메시지 초기화
+      const token = authToken || localStorage.getItem("authToken"); // 로컬 스토리지에서 토큰 가져오기
+      console.log("API 요청에 사용될 토큰:", token);
+  
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/users/me/audios`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+  
+        console.log("서버 응답 상태 코드:", response.status);
+  
+        if (!response.ok) {
+          if (response.status === 401) {
+            console.error("토큰이 유효하지 않음. 로그인 페이지로 이동합니다.");
+            navigate("/login");
+          }
+          throw new Error(`서버 요청 실패: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        console.log("서버에서 받은 데이터:", data);
+  
+        if (data && data.data) {
+          const files = data.data.map((file) => ({
+            name: file.original_filepath,
+            text: file.text || "텍스트가 없습니다.",
+            date: new Date(file.created_at).toLocaleDateString(),
+            url: file.processed_filepath,
+          }));
+          setWavFiles(files);
+          setVisibleFiles(files.slice(0, 8)); // 첫 8개 파일만 표시
+          if (files.length <= 8) setShowMore(false); // 더보기 버튼 숨김
+        } else {
+          setErrorMessage("오디오 파일을 불러올 수 없습니다.");
+        }
+      } catch (error) {
+        console.error("API 요청 중 오류 발생:", error);
+        setErrorMessage("오디오 파일을 불러오는 중 문제가 발생했습니다.");
+      } finally {
+        setIsLoading(false); // 로딩 상태 종료
+      }
+    };
+  
+    fetchAudioFiles();
+  }, [isAuthenticated, authToken, navigate, API_BASE_URL]);
 
   const handleShowMore = () => {
     const nextFiles = wavFiles.slice(visibleFiles.length, visibleFiles.length + 8);
-    setVisibleFiles(prevFiles => [...prevFiles, ...nextFiles]);
+    setVisibleFiles((prevFiles) => [...prevFiles, ...nextFiles]);
 
     if (visibleFiles.length + nextFiles.length >= wavFiles.length) {
       setShowMore(false);
@@ -57,7 +84,7 @@ const Record = () => {
   };
 
   const handleLogoClick = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const handleAudioPlay = (audioElement) => {
@@ -77,12 +104,22 @@ const Record = () => {
         <h1 className="R-logo-text">이어톡</h1>
       </aside>
       <main className="wav-list">
-        {visibleFiles.length > 0 ? (
+        {isLoading ? (
+          <p className="loading-message">로딩 중입니다...</p>
+        ) : errorMessage ? (
+          <p className="error-message">{errorMessage}</p>
+        ) : visibleFiles.length > 0 ? (
           visibleFiles.map((file, index) => (
             <div key={index} className="wav-item">
-              <p><strong>파일명:</strong> {file.name}</p>
-              <p><strong>생성된 텍스트:</strong> {file.text}</p>
-              <p><strong>생성 날짜:</strong> {file.date}</p>
+              <p>
+                <strong>파일명:</strong> {file.name}
+              </p>
+              <p>
+                <strong>생성된 텍스트:</strong> {file.text}
+              </p>
+              <p>
+                <strong>생성 날짜:</strong> {file.date}
+              </p>
               <audio
                 controls
                 src={file.url}
@@ -106,138 +143,3 @@ const Record = () => {
 };
 
 export default Record;
-
-
-// import React, { useEffect, useState, useRef } from "react";
-// import { useNavigate } from "react-router-dom";
-// import logo from '../URL/EarTalkLOGO.png';
-// import '../css/Record.css';
-
-// const Record = () => {
-//   const [wavFiles, setWavFiles] = useState([]);
-//   const [visibleFiles, setVisibleFiles] = useState([]);
-//   const [showMore, setShowMore] = useState(true);
-//   const navigate = useNavigate();
-//   const currentAudioRef = useRef(null); 
-
-//   useEffect(() => {
-//     // 임의의 데이터로 wavFiles 설정
-//     const dummyData = [
-//       {
-//         name: "sample1.wav",
-//         text: "이것은 샘플 텍스트입니다.",
-//         date: new Date().toLocaleDateString(),
-//         url: "/audio/sample1.wav"
-//       },
-//       {
-//         name: "sample2.wav",
-//         text: "두 번째 샘플 텍스트입니다.",
-//         date: new Date().toLocaleDateString(),
-//         url: "/audio/sample2.wav"
-//       },
-//       {
-//         name: "sample3.wav",
-//         text: "세 번째 샘플 텍스트입니다.",
-//         date: new Date().toLocaleDateString(),
-//         url: "/audio/sample3.wav"
-//       },
-//       {
-//         name: "sample4.wav",
-//         text: "네 번째 샘플 텍스트입니다.",
-//         date: new Date().toLocaleDateString(),
-//         url: "/audio/sample4.wav"
-//       },
-//       {
-//         name: "sample5.wav",
-//         text: "다섯 번째 샘플 텍스트입니다.",
-//         date: new Date().toLocaleDateString(),
-//         url: "/audio/sample5.wav"
-//       },
-//       {
-//         name: "sample6.wav",
-//         text: "여섯 번째 샘플 텍스트입니다.",
-//         date: new Date().toLocaleDateString(),
-//         url: "/audio/sample6.wav"
-//       },
-//       {
-//         name: "sample7.wav",
-//         text: "일곱 번째 샘플 텍스트입니다.",
-//         date: new Date().toLocaleDateString(),
-//         url: "/audio/sample7.wav"
-//       },
-//       {
-//         name: "sample8.wav",
-//         text: "여덟 번째 샘플 텍스트입니다.",
-//         date: new Date().toLocaleDateString(),
-//         url: "/audio/sample8.wav"
-//       },
-//       {
-//         name: "sample9.wav",
-//         text: "아홉 번째 샘플 텍스트입니다.",
-//         date: new Date().toLocaleDateString(),
-//         url: "/audio/sample9.wav"
-//       },
-//     ];
-
-//     setWavFiles(dummyData);
-//     setVisibleFiles(dummyData.slice(0, 8));
-
-//   }, []);
-
-//   const handleShowMore = () => {
-//     const nextFiles = wavFiles.slice(visibleFiles.length, visibleFiles.length + 8);
-//     setVisibleFiles(prevFiles => [...prevFiles, ...nextFiles]);
-
-//     if (visibleFiles.length + nextFiles.length >= wavFiles.length) {
-//       setShowMore(false);
-//     }
-//   };
-
-//   const handleLogoClick = () => {
-//     navigate('/');
-//   };
-
-//   const handleAudioPlay = (audioElement) => {
-//     if (currentAudioRef.current && currentAudioRef.current !== audioElement) {
-//       currentAudioRef.current.pause();
-//       currentAudioRef.current.currentTime = 0;
-//     }
-//     currentAudioRef.current = audioElement;
-//   };
-
-//   return (
-//     <div className="record-container">
-//       <aside className="R-logo-container">
-//         <img src={logo} alt="이어톡 로고" onClick={handleLogoClick} className="R-logo-image" />
-//         <h1 className="R-logo-text">이어톡</h1>
-//       </aside>
-//       <main className="wav-list">
-//         {visibleFiles.length > 0 ? (
-//           visibleFiles.map((file, index) => (
-//             <div key={index} className="wav-item">
-//               <p><strong>파일명:</strong> {file.name}</p>
-//               <p><strong>생성된 텍스트:</strong> {file.text}</p>
-//               <p><strong>생성 날짜:</strong> {file.date}</p>
-//               <audio
-//                 controls
-//                 src={file.url}
-//                 onPlay={(e) => handleAudioPlay(e.target)}
-//               >
-//                 Your browser does not support the audio element.
-//               </audio>
-//             </div>
-//           ))
-//         ) : (
-//           <p className="no-files">녹음된 파일이 없습니다.</p>
-//         )}
-//         {showMore && visibleFiles.length < wavFiles.length && (
-//           <button className="show-more-button" onClick={handleShowMore}>
-//             더보기
-//           </button>
-//         )}
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default Record;
