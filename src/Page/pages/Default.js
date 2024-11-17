@@ -29,6 +29,12 @@ const Default = () => {
   const [isPlaying, setIsPlaying] = useState(false); // 추가
   const [recentAudioUrl, setRecentAudioUrl] = useState(null); // 'recentAudio'를 'recentAudioUrl'로 대체
   const buffersRef = useRef([]);
+  const [textAudioUrl, setTextAudioUrl] = useState(null);
+  const [textIdentifier, setTextIdentifier] = useState(null);
+  const [isProcessingText, setIsProcessingText] = useState(false);
+  const [isPlayingTextAudio, setIsPlayingTextAudio] = useState(false); // 텍스트 변환된 오디오
+
+
 
 
   const audioContextRef = useRef(null);
@@ -68,8 +74,12 @@ const Default = () => {
   };
 
   useEffect(() => {
-    console.log("재생할 오디오 URL:", recentAudioUrl);
-  }, [recentAudioUrl]);
+    if (recentAudioUrl) {
+      console.log("재생할 오디오 URL:", recentAudioUrl);
+    } else {
+      console.error("오디오 URL이 생성되지 않았습니다.");
+    }
+  }, [recentAudioUrl]);  
 
   useEffect(() => {
     if (isRecording) {
@@ -88,6 +98,90 @@ const Default = () => {
     setInputText(e.target.value);
   };
 
+  const fetchTextAudioInfo = async (identifier) => {
+    try {
+      // identifier를 통해 서버에서 텍스트 변환된 오디오 정보를 가져옴
+      const response = await axios.get(`${API_BASE_URL}/api/audio/${identifier}`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+  
+      if (response.status === 200) {
+        console.log("API 응답 데이터:", response.data);
+  
+        // identifier를 기반으로 파일 서빙 URL 생성
+        setTextAudioUrl(`${API_BASE_URL}/api/file/${identifier}`);
+        setRecentAudioFilename(response.data.original_filepath); // 필요 시 파일명 저장
+      } else {
+        console.error("서버 응답 실패:", response);
+        setShowAlert("텍스트 변환된 오디오 정보를 가져오는데 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("텍스트 변환된 오디오 정보를 가져오는 중 오류 발생:", error);
+      setShowAlert("텍스트 변환된 오디오 정보를 가져오는 중 오류가 발생했습니다.");
+    }
+  };
+
+  const sendTextToServer = async () => {
+    if (!inputText.trim()) {
+        setShowAlert("텍스트를 입력해주세요.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("input_text", inputText); // input_text 추가
+
+    try {
+        setIsProcessingText(true);
+        const response = await axios.post(`${API_BASE_URL}/api/audio`, formData, {
+            headers: {
+                Authorization: `Bearer ${authToken}`, // 인증 토큰
+                "Content-Type": "multipart/form-data", // 올바른 Content-Type 설정
+            },
+        });
+
+        if (response.status === 200) {
+            const identifier = response.data.identifier;
+            setTextIdentifier(identifier); // 서버에서 받은 identifier 저장
+            fetchTextAudioInfo(identifier); // identifier로 파일 URL 가져오기
+            setShowAlert("텍스트 변환 완료. 사운드 아이콘을 눌러 재생하세요.");
+        }
+    } catch (error) {
+        console.error("텍스트 변환 중 오류 발생:", error);
+        if (error.response && error.response.data) {
+            console.error("응답 데이터:", error.response.data); // 서버에서 반환한 오류 메시지
+        }
+        setShowAlert("텍스트 변환 중 문제가 발생했습니다.");
+    } finally {
+        setIsProcessingText(false);
+    }
+};
+  
+  const handlePlayTextAudio = async () => {
+    if (!textAudioUrl) {
+      setShowAlert('재생할 텍스트 변환 파일이 없습니다.');
+      return;
+    }
+  
+    if (isPlayingTextAudio) {
+      // 이미 재생 중이면 중지
+      setIsPlayingTextAudio(false);
+      return;
+    }
+  
+    const audio = new Audio(textAudioUrl);
+    setIsPlayingTextAudio(true);
+  
+    audio.play()
+      .then(() => {
+        audio.onended = () => setIsPlayingTextAudio(false); // 재생 종료 후 상태 업데이트
+      })
+      .catch((error) => {
+        console.error('오디오 재생 중 오류 발생:', error);
+        setShowAlert('오디오 재생 중 문제가 발생했습니다.');
+        setIsPlayingTextAudio(false);
+      });
+  };
+  
   const handleRecord = async () => {
     if (!isRecording) {
       try {
@@ -287,13 +381,12 @@ const Default = () => {
             {!isAuthenticated && (
               <p className="login-required">텍스트 입력은 로그인한 사용자만 이용 가능합니다.</p>
             )}
-            <button
-  className={`convert-button ${isAuthenticated ? 'logged-in' : ''}`}
-  onClick={() => sendAudioToServer(audioBlob)}
-  disabled={!isAuthenticated || isProcessing} // audioBlob 조건 제거
->
-  변환하기
-</button>
+            <button className={`convert-button ${isAuthenticated ? 'logged-in' : ''}`}
+            onClick={sendTextToServer}
+            disabled={!isAuthenticated || isProcessing} // audioBlob 조건 제거
+            >
+              변환하기
+              </button>
             <div
               className={`record-button ${isRecording ? 'recording' : ''}`}
               onClick={handleRecord}
@@ -318,7 +411,15 @@ const Default = () => {
 {isAudioPlayerVisible && (
     <div className="audio-player-modal">
         <h3>{recentAudioFilename ? `파일명: ${recentAudioFilename}` : "녹음이 완료되었습니다."}</h3>
-        <audio controls>
+        <audio
+            id="audioPlayer"
+            controls
+            onLoadedData={() => console.log("오디오 로드 완료")} // 디버깅용
+            onError={(e) => {
+              console.error("오디오 로드 오류:", e.target.error);
+              setShowAlert("오디오 파일 로드에 실패했습니다.");
+          }}
+        >
             <source src={recentAudioUrl} type="audio/wav" />
             브라우저가 오디오 태그를 지원하지 않습니다.
         </audio>
@@ -333,9 +434,13 @@ const Default = () => {
           <button className="icon-button" onClick={handleCopyText}>
             <MdOutlineContentCopy />
           </button>
-          <button className="icon-button" onClick={() => handlePlayTTS(processedAudio)}>
-            {isPlaying ? <AiFillSound /> : <AiOutlineSound />}
-          </button>
+          <button
+          className="icon-button"
+          onClick={handlePlayTextAudio}
+           disabled={!textAudioUrl}
+           >
+            {isPlayingTextAudio ? <AiFillSound /> : <AiOutlineSound />}
+            </button>
         </div>
 
         <div className="privacy-policy-link" onClick={togglePrivacyPolicy}>
