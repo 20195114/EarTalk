@@ -279,6 +279,83 @@
   padding: 10px;
 }
 
+.audio-player-modal {
+  position: fixed; /* 화면 고정 */
+  top: 50%; /* 세로 중앙 */
+  left: 50%; /* 가로 중앙 */
+  transform: translate(-50%, -50%); /* 중앙 정렬 */
+  width: 80%; /* 모달 너비 (화면 크기에 따라 유동적) */
+  max-width: 300px; /* 최대 너비 제한 */
+  padding: 15px; /* 내부 여백 */
+  background-color: #ffffff; /* 배경색 */
+  border-radius: 10px; /* 모서리 둥글게 */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  z-index: 1000; /* 화면 위에 표시 */
+  font-family: Arial, sans-serif; /* 기본 글꼴 */
+}
+
+.audio-player-modal h3 {
+  margin-bottom: 10px; /* 아래 여백 */
+  font-size: 18px; /* 텍스트 크기 */
+  color: #333; /* 텍스트 색상 */
+}
+
+.audio-player-modal audio {
+  width: 100%; /* 오디오 플레이어 가로 100% */
+  border-radius: 5px; /* 오디오 플레이어 모서리 둥글게 */
+  margin-top: 10px; /* 위 여백 */
+}
+
+.audio-player-modal .button-container {
+  display: flex; /* 버튼을 가로로 배치 */
+  justify-content: space-between; /* 버튼 간격 균등 */
+  gap: 10px; /* 버튼 간격 */
+  margin-top: 15px; /* 버튼 그룹 위쪽 여백 */
+}
+
+.audio-player-modal .play-button{
+  flex: 1; /* 버튼 크기를 동일하게 설정 */
+  padding: 10px 10px; /* 버튼 높이 조정 */
+  font-size: 16px; /* 버튼 텍스트 크기 */
+  border: none; /* 기본 테두리 제거 */
+  border-radius: 5px; /* 버튼 모서리 둥글게 */
+  cursor: pointer; /* 포인터 커서 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* 호버 효과 */
+  margin: 20px;
+}
+.audio-player-modal .close-button {
+  flex: 1; /* 버튼 크기를 동일하게 설정 */
+  padding: 10px 25px; /* 버튼 높이 조정 */
+  font-size: 16px; /* 버튼 텍스트 크기 */
+  border: none; /* 기본 테두리 제거 */
+  border-radius: 5px; /* 버튼 모서리 둥글게 */
+  cursor: pointer; /* 포인터 커서 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* 호버 효과 */
+  margin: 20px;
+}
+
+.audio-player-modal .play-button {
+  background-color: #4caf50; /* 재생 버튼 기본 색상 */
+  color: white; /* 텍스트 색상 */
+}
+
+.audio-player-modal .play-button:hover {
+  background-color: #45a049; /* 호버 시 재생 버튼 색상 변경 */
+  transform: translateY(-2px); /* 버튼 살짝 위로 이동 */
+}
+
+.audio-player-modal .close-button {
+  background-color: #f44336; /* 닫기 버튼 기본 색상 */
+  color: white; /* 텍스트 색상 */
+}
+
+.audio-player-modal .close-button:hover {
+  background-color: #e60000; /* 호버 시 닫기 버튼 색상 변경 */
+  transform: translateY(-2px); /* 버튼 살짝 위로 이동 */
+}
 /* 반응형 웹 디자인 */
 @media only screen and (max-width: 768px) {
   .ear-talk-main {
@@ -457,5 +534,54 @@
   .cancel-button:hover {
     background-color: #bdbdbd;
   }
+
+    .audio-player-modal {
+      width: 90%; /* 더 작은 화면에서는 너비를 더 크게 */
+      max-width: 280px; /* 최대 너비 제한 */
+      padding: 10px; /* 내부 여백 감소 */
+    }
   
-}
+    .audio-player-modal h3 {
+      font-size: 12px; /* 텍스트 크기 줄임 */
+      margin-bottom: 8px; /* 여백 줄임 */
+    }
+  
+    .audio-player-modal .play-button {
+      font-size: 10px; /* 버튼 크기 줄임 */
+      padding: 5px 14px; /* 버튼 여백 조정 */
+      margin: 10px;
+    }
+    .audio-player-modal .close-button{
+      font-size: 10px; /* 버튼 크기 줄임 */
+      padding: 5px 20px; /* 버튼 여백 조정 */
+      margin: 10px;
+    }
+
+    .audio-player-modal .button-container {
+      display: flex; /* 버튼을 가로로 배치 */
+      justify-content: space-between; /* 버튼 간격 균등 */
+      gap: 10px; /* 버튼 간격 */
+      margin-top: 15px; /* 버튼 그룹 위쪽 여백 */
+    }
+    
+    .audio-player-modal .play-button {
+      background-color: #4caf50; /* 재생 버튼 기본 색상 */
+      color: white; /* 텍스트 색상 */
+    }
+    
+    .audio-player-modal .play-button:hover {
+      background-color: #45a049; /* 호버 시 재생 버튼 색상 변경 */
+      transform: translateY(-2px); /* 버튼 살짝 위로 이동 */
+    }
+    
+    .audio-player-modal .close-button {
+      background-color: #f44336; /* 닫기 버튼 기본 색상 */
+      color: white; /* 텍스트 색상 */
+    }
+    
+    .audio-player-modal .close-button:hover {
+      background-color: #e60000; /* 호버 시 닫기 버튼 색상 변경 */
+      transform: translateY(-2px); /* 버튼 살짝 위로 이동 */
+    }
+  }
+

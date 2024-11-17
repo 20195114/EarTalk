@@ -29,6 +29,7 @@ const Default = () => {
   const [isPrivacyPolicyOpen, setIsPrivacyPolicyOpen] = useState(false);
   const [recentAudio, setRecentAudio] = useState(null); // 회원의 최신 음성 파일 경로
   const [isAudioPlayerVisible, setIsAudioPlayerVisible] = useState(false); // 재생 폼 표시 여부
+  const [isPlayButtonVisible, setIsPlayButtonVisible] = useState(true);
 
   const createWavFile = (float32Array, sampleRate = 44100) => {
     const buffer = new ArrayBuffer(44 + float32Array.length * 2);
@@ -116,7 +117,7 @@ const Default = () => {
     }
   };  
 
-  const stopRecording = () => {
+  const stopRecording = async () => {
     if (processorRef.current) {
       processorRef.current.disconnect();
       streamRef.current.getTracks().forEach((track) => track.stop());
@@ -125,27 +126,21 @@ const Default = () => {
   
     if (audioData.length > 0) {
       const wavBlob = createWavFile(new Float32Array(audioData));
-      console.log("생성된 Blob 확인:", wavBlob);
-      setAudioData([]); // 데이터 초기화
+      setAudioData([]); // Reset data
       setIsRecording(false);
-      setShowAlert('녹음이 완료되었습니다.');
+      setShowAlert("녹음이 완료되었습니다.");
+  
       if (isAuthenticated) {
-        sendAudioToServer(wavBlob); // 회원일 경우 백엔드로 전송
+        await sendAudioToServer(wavBlob); // Send recorded audio to backend
+        fetchRecentAudio(); // Fetch and play the latest audio
       }
     } else {
-      setShowAlert('녹음 데이터가 없습니다. 다시 시도해주세요.');
+      setShowAlert("녹음 데이터가 없습니다. 다시 시도해주세요.");
     }
-  };  
+  };
   
   const fetchRecentAudio = async () => {
-    const token = authToken || localStorage.getItem("authToken"); // 로컬 스토리지에서 토큰 가져오기
-    console.log("fetchRecentAudio 요청에 사용 중인 토큰:", token);
-  
-    if (!token) {
-      console.warn("토큰이 없습니다. 로그인 페이지로 이동합니다.");
-      navigate("/login");
-      return;
-    }
+    const token = authToken || localStorage.getItem("authToken");
   
     try {
       const response = await axios.get(`${API_BASE_URL}/api/users/me/audios`, {
@@ -155,24 +150,20 @@ const Default = () => {
         },
       });
   
-      console.log("fetchRecentAudio 응답 상태:", response.status);
-  
       if (response.status === 200) {
         const audioList = response.data.data;
         if (audioList.length > 0) {
           const latestAudio = audioList[audioList.length - 1].processed_filepath;
-          setRecentAudio(latestAudio);
-          setIsAudioPlayerVisible(true); // 재생 폼 표시
-          playAudioOnce(latestAudio); // 최신 파일 자동 재생
+          setRecentAudio(`${API_BASE_URL}${latestAudio}`);
+          setIsAudioPlayerVisible(true); // Show playback modal
         }
       }
     } catch (error) {
-      console.error("fetchRecentAudio 중 오류 발생:", error);
+      console.error("Error fetching recent audio:", error);
       setShowAlert("최근 음성 파일을 가져올 수 없습니다.");
     }
-  };  
+  };
   
-
   const playAudioOnce = (audioUrl) => {
     if (!audioUrl) {
       setShowAlert('재생할 파일이 없습니다.');
@@ -217,6 +208,18 @@ const Default = () => {
     } catch (error) {
       console.error("오류 발생:", error);
       setShowAlert("오류가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
+  const playRecentAudio = () => {
+    if (recentAudio) {
+      const audio = new Audio(recentAudio);
+      audio.play().catch((error) => {
+        console.error("Audio playback error:", error);
+        setShowAlert("오디오 재생 중 문제가 발생했습니다.");
+      });
+  
+      // Hide play button after playback starts
+      setIsPlayButtonVisible(false);
     }
   };
 
@@ -354,14 +357,20 @@ const Default = () => {
         )}
 
 {isAudioPlayerVisible && (
-          <div className="audio-player">
-            <p>음성이 자동으로 재생됩니다.</p>
-            <audio controls src={recentAudio}></audio>
-            <button className="close-button" onClick={() => setIsAudioPlayerVisible(false)}>
-              닫기
-            </button>
-          </div>
-        )}
+  <div className="audio-player-modal">
+    <h3>녹음이 완료되었습니다.</h3>
+    {isPlayButtonVisible ? (
+      <button onClick={playRecentAudio} className="play-button">
+        재생하기
+      </button>
+    ) : (
+      <audio controls src={recentAudio}></audio>
+    )}
+    <button className="close-button" onClick={() => setIsAudioPlayerVisible(false)}>
+      닫기
+    </button>
+  </div>
+)}
 
         <div className={`icon-container ${isAuthenticated ? 'logged-in' : ''}`}>
           <button className="icon-button" onClick={handleCopyText}>
