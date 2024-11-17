@@ -13,7 +13,7 @@ const Record = () => {
   const [errorMessage, setErrorMessage] = useState(null); // 에러 메시지
   const navigate = useNavigate();
   const currentAudioRef = useRef(null);
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:3000"; // API 기본 URL
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://eartalk.site:17004";
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -21,13 +21,13 @@ const Record = () => {
       navigate("/login");
       return;
     }
-  
+
     const fetchAudioFiles = async () => {
       setIsLoading(true); // 로딩 상태 시작
       setErrorMessage(null); // 이전 에러 메시지 초기화
       const token = authToken || localStorage.getItem("authToken"); // 로컬 스토리지에서 토큰 가져오기
       console.log("API 요청에 사용될 토큰:", token);
-  
+
       try {
         const response = await fetch(`${API_BASE_URL}/api/users/me/audios`, {
           method: "GET",
@@ -36,9 +36,9 @@ const Record = () => {
             Accept: "application/json",
           },
         });
-  
+
         console.log("서버 응답 상태 코드:", response.status);
-  
+
         if (!response.ok) {
           if (response.status === 401) {
             console.error("토큰이 유효하지 않음. 로그인 페이지로 이동합니다.");
@@ -46,16 +46,22 @@ const Record = () => {
           }
           throw new Error(`서버 요청 실패: ${response.status}`);
         }
-  
+
         const data = await response.json();
         console.log("서버에서 받은 데이터:", data);
-  
+
         if (data && data.data) {
           const files = data.data.map((file) => ({
-            name: file.original_filepath,
+            name: file.original_filepath.split('/').pop(), // 파일명만 표시
             text: file.text || "텍스트가 없습니다.",
-            date: new Date(file.created_at).toLocaleDateString(),
-            url: file.processed_filepath,
+            date: file.created_at
+              ? new Date(file.created_at).toLocaleDateString("ko-KR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              : "날짜 없음",
+            url: `${API_BASE_URL}${file.processed_filepath}`, // 절대 URL로 변환
           }));
           setWavFiles(files);
           setVisibleFiles(files.slice(0, 8)); // 첫 8개 파일만 표시
@@ -70,7 +76,7 @@ const Record = () => {
         setIsLoading(false); // 로딩 상태 종료
       }
     };
-  
+
     fetchAudioFiles();
   }, [isAuthenticated, authToken, navigate, API_BASE_URL]);
 
@@ -95,6 +101,16 @@ const Record = () => {
     }
     // 새로운 오디오를 현재 재생 중인 오디오로 설정
     currentAudioRef.current = audioElement;
+
+    audioElement
+      .play()
+      .then(() => {
+        console.log("오디오 재생 시작");
+      })
+      .catch((error) => {
+        console.error("오디오 재생 오류:", error);
+        setErrorMessage("오디오를 재생할 수 없습니다. 파일 경로를 확인하세요.");
+      });
   };
 
   return (
@@ -112,10 +128,8 @@ const Record = () => {
           visibleFiles.map((file, index) => (
             <div key={index} className="wav-item">
               <p>
-                <strong>파일명:</strong> {file.name}
-              </p>
-              <p>
-                <strong>생성된 텍스트:</strong> {file.text}
+                <strong>파일명:</strong>{" "}
+                <span style={{ wordWrap: "break-word", display: "block" }}>{file.name}</span>
               </p>
               <p>
                 <strong>생성 날짜:</strong> {file.date}
