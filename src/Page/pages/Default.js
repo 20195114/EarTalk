@@ -43,30 +43,29 @@ const Default = () => {
         view.setUint8(offset + i, str.charCodeAt(i));
       }
     };
-    
   
+    // WAV 헤더 작성
     writeString(0, "RIFF");
     view.setUint32(4, 36 + float32Array.length * 2, true);
     writeString(8, "WAVE");
     writeString(12, "fmt ");
     view.setUint32(16, 16, true);
-    view.setUint16(20, 1, true);
-    view.setUint16(22, 1, true);
+    view.setUint16(20, 1, true); // PCM
+    view.setUint16(22, 1, true); // Mono
     view.setUint32(24, sampleRate, true);
-    view.setUint32(28, sampleRate * 2, true);
-    view.setUint16(32, 2, true);
-    view.setUint16(34, 16, true);
+    view.setUint32(28, sampleRate * 2, true); // Byte rate
+    view.setUint16(32, 2, true); // Block align
+    view.setUint16(34, 16, true); // Bits per sample
     writeString(36, "data");
     view.setUint32(40, float32Array.length * 2, true);
   
+    // PCM 데이터 변환
     const pcmData = new Int16Array(buffer, 44);
     for (let i = 0; i < float32Array.length; i++) {
       pcmData[i] = Math.max(-1, Math.min(1, float32Array[i])) * 0x7fff;
     }
   
-    const wavBlob = createWavFile(new Float32Array(audioData));
-    console.log("생성된 WAV Blob:", wavBlob); // Blob 디버깅
-    return wavBlob;
+    return new Blob([buffer], { type: "audio/wav" });
   };  
 
   useEffect(() => {
@@ -79,7 +78,7 @@ const Default = () => {
     console.log("isAuthenticated:", isAuthenticated);
     console.log("isProcessing:", isProcessing);
     console.log("audioBlob 존재 여부:", !!audioBlob);
-    console.log("audioBlob 상태가 업데이트되었습니다:", audioBlob);
+    console.log("audioBlob 상태 변경:", audioBlob);
   }, [isAuthenticated, isProcessing, audioBlob]);
   
 
@@ -124,7 +123,7 @@ const Default = () => {
         if (error.name === 'NotAllowedError') {
           setShowAlert('마이크 접근 권한이 필요합니다. 브라우저 설정을 확인해주세요.');
         } else {
-          console.error('Error starting recording', error);
+          console.error('Error starting recording:', error);
           setShowAlert('녹음을 시작할 수 없습니다.');
         }
       }
@@ -141,13 +140,17 @@ const Default = () => {
     }
   
     if (audioData.length > 0) {
-      const wavBlob = createWavFile(new Float32Array(audioData));
-      console.log("생성된 Blob:", wavBlob); // 생성된 Blob 확인
-      setAudioBlob(wavBlob); // Blob 상태 업데이트
-      console.log("audioBlob이 업데이트됨:", wavBlob); // 상태 업데이트 확인
-      setAudioData([]); // 데이터 초기화
+      try {
+        const wavBlob = createWavFile(new Float32Array(audioData));
+        console.log("생성된 WAV Blob:", wavBlob);
+        setAudioBlob(wavBlob); // Blob 상태 업데이트
+        setAudioData([]); // 녹음 데이터 초기화
+        setShowAlert("녹음이 완료되었습니다.");
+      } catch (error) {
+        console.error("Blob 생성 중 오류 발생:", error);
+        setShowAlert("녹음 데이터 처리 중 오류가 발생했습니다.");
+      }
       setIsRecording(false);
-      setShowAlert("녹음이 완료되었습니다.");
     } else {
       setShowAlert("녹음 데이터가 없습니다. 다시 시도해주세요.");
     }
