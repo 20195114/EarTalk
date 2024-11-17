@@ -10,77 +10,66 @@ import '../css/Default.css';
 import PrivacyPolicy from '../components/PrivacyPolicy';
 
 const Default = () => {
-  const { isAuthenticated, authToken } = useContext(AuthContext); // 로그인 여부 확인
+  const { isAuthenticated, authToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://eartalk.site:17004";
 
   const [inputText, setInputText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
-  const [processedAudio, setProcessedAudio] = useState(null);
+  const [audioBlob, setAudioBlob] = useState(null);
+  const [audioIdentifier, setAudioIdentifier] = useState(null);
   const [showAlert, setShowAlert] = useState('');
-  const [finalText, setFinalText] = useState('');
+  const [isAudioPlayerVisible, setIsAudioPlayerVisible] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [audioData, setAudioData] = useState([]);
-  const [isConverted, setIsConverted] = useState(false); // 변환 여부 확인
+  const [isPrivacyPolicyOpen, setIsPrivacyPolicyOpen] = useState(false);
+  const [finalText, setFinalText] = useState(''); // 추가
+  const [recentAudioFilename, setRecentAudioFilename] = useState(null); // 추가
+  const [isPlayButtonVisible, setIsPlayButtonVisible] = useState(false); // 추가
+  const [processedAudio, setProcessedAudio] = useState(null); // 추가
+  const [isPlaying, setIsPlaying] = useState(false); // 추가
+  const [recentAudioUrl, setRecentAudioUrl] = useState(null); // 'recentAudio'를 'recentAudioUrl'로 대체
+  const buffersRef = useRef([]);
+
+
   const audioContextRef = useRef(null);
   const processorRef = useRef(null);
   const streamRef = useRef(null);
-  const [isPrivacyPolicyOpen, setIsPrivacyPolicyOpen] = useState(false);
-  const [recentAudio, setRecentAudio] = useState(null); // 회원의 최신 음성 파일 경로
-  const [isAudioPlayerVisible, setIsAudioPlayerVisible] = useState(false); // 재생 폼 표시 여부
-  const [isPlayButtonVisible, setIsPlayButtonVisible] = useState(true);
-  const [recentAudioFilename, setRecentAudioFilename] = useState(null);
-  const [audioBlob, setAudioBlob] = useState(null); // Blob 상태 추가
-
 
   const createWavFile = (float32Array, sampleRate = 44100) => {
     const buffer = new ArrayBuffer(44 + float32Array.length * 2);
     const view = new DataView(buffer);
-  
+
     const writeString = (offset, str) => {
       for (let i = 0; i < str.length; i++) {
         view.setUint8(offset + i, str.charCodeAt(i));
       }
     };
-  
-    // WAV 헤더 작성
+
     writeString(0, "RIFF");
     view.setUint32(4, 36 + float32Array.length * 2, true);
     writeString(8, "WAVE");
     writeString(12, "fmt ");
     view.setUint32(16, 16, true);
-    view.setUint16(20, 1, true); // PCM
-    view.setUint16(22, 1, true); // Mono
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
     view.setUint32(24, sampleRate, true);
-    view.setUint32(28, sampleRate * 2, true); // Byte rate
-    view.setUint16(32, 2, true); // Block align
-    view.setUint16(34, 16, true); // Bits per sample
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
     writeString(36, "data");
     view.setUint32(40, float32Array.length * 2, true);
-  
-    // PCM 데이터 변환
+
     const pcmData = new Int16Array(buffer, 44);
     for (let i = 0; i < float32Array.length; i++) {
       pcmData[i] = Math.max(-1, Math.min(1, float32Array[i])) * 0x7fff;
     }
-  
+
     return new Blob([buffer], { type: "audio/wav" });
-  };  
+  };
 
   useEffect(() => {
-    console.log("isProcessing 상태:", isProcessing);
-    console.log("isAuthenticated 상태:", isAuthenticated);
-  }, [isProcessing, isAuthenticated]);  
-
-  useEffect(() => {
-    console.log("버튼 비활성화 상태 확인:");
-    console.log("isAuthenticated:", isAuthenticated);
-    console.log("isProcessing:", isProcessing);
-    console.log("audioBlob 존재 여부:", !!audioBlob);
-    console.log("audioBlob 상태 변경:", audioBlob);
-  }, [isAuthenticated, isProcessing, audioBlob]);
-  
+    console.log("재생할 오디오 URL:", recentAudioUrl);
+  }, [recentAudioUrl]);
 
   useEffect(() => {
     if (isRecording) {
@@ -102,221 +91,179 @@ const Default = () => {
   const handleRecord = async () => {
     if (!isRecording) {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            sampleRate: 44100,
+            channelCount: 1,
+            echoCancellation: false,
+            noiseSuppression: false,
+          },
+        });
         audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
         streamRef.current = stream;
   
         const source = audioContextRef.current.createMediaStreamSource(stream);
         const processor = audioContextRef.current.createScriptProcessor(4096, 1, 1);
   
+        buffersRef.current = []; // 초기화
         processor.onaudioprocess = (e) => {
           const buffer = e.inputBuffer.getChannelData(0);
-          setAudioData((prev) => [...prev, ...buffer]);
+          buffersRef.current = buffersRef.current.concat(Array.from(buffer));
+          console.log("현재 버퍼 길이:", buffersRef.current.length);
         };
   
         source.connect(processor);
         processor.connect(audioContextRef.current.destination);
-  
         processorRef.current = processor;
+  
         setIsRecording(true);
       } catch (error) {
-        if (error.name === 'NotAllowedError') {
-          setShowAlert('마이크 접근 권한이 필요합니다. 브라우저 설정을 확인해주세요.');
-        } else {
-          console.error('Error starting recording:', error);
-          setShowAlert('녹음을 시작할 수 없습니다.');
-        }
+        console.error('마이크 접근 오류:', error);
+        setShowAlert('마이크 접근 권한이 필요합니다.');
       }
     } else {
-      stopRecording();
-    }
-  };  
-
-  const stopRecording = async () => {
-    if (processorRef.current) {
-      processorRef.current.disconnect();
-      streamRef.current.getTracks().forEach((track) => track.stop());
-      audioContextRef.current.close();
-    }
-  
-    if (audioData.length > 0) {
       try {
-        const wavBlob = createWavFile(new Float32Array(audioData));
-        console.log("생성된 WAV Blob:", wavBlob);
-        setAudioBlob(wavBlob); // Blob 상태 업데이트
-        setAudioData([]); // 녹음 데이터 초기화
-        setShowAlert("녹음이 완료되었습니다.");
-      } catch (error) {
-        console.error("Blob 생성 중 오류 발생:", error);
-        setShowAlert("녹음 데이터 처리 중 오류가 발생했습니다.");
-      }
-      setIsRecording(false);
-    } else {
-      setShowAlert("녹음 데이터가 없습니다. 다시 시도해주세요.");
-    }
-  };  
-  
-  const fetchRecentAudio = async () => {
-    const token = authToken || localStorage.getItem("authToken");
-    if (!token) {
-      console.warn("토큰이 없습니다. 로그인 페이지로 이동합니다.");
-      navigate("/login");
-      return;
-    }
-  
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/users/me/audios`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-  
-      if (response.status === 200) {
-        const audioList = response.data.data;
-        if (audioList.length > 0) {
-          const latestAudio = audioList[audioList.length - 1];
-          setRecentAudio(latestAudio.processed_filepath); // 오디오 파일 경로 저장
-          setRecentAudioFilename(latestAudio.original_filepath.split('/').pop()); // 파일명 저장
-          setIsAudioPlayerVisible(true);
+        // Processor 해제
+        if (processorRef.current) {
+          processorRef.current.disconnect();
+          processorRef.current = null;
         }
+  
+        // Stream 해제
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach((track) => track.stop());
+          streamRef.current = null;
+        }
+  
+        // AudioContext 종료
+        if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+          await audioContextRef.current.close();
+          audioContextRef.current = null;
+        }
+  
+        if (buffersRef.current.length === 0) {
+          setShowAlert('녹음 데이터가 없습니다.');
+          return;
+        }
+  
+        const wavBlob = createWavFile(new Float32Array(buffersRef.current));
+        console.log("생성된 Blob 크기:", wavBlob.size);
+        setAudioBlob(wavBlob);
+        sendAudioToServer(); // 녹음이 완료되면 자동 업로드
+
+  
+        // 상태 초기화
+        buffersRef.current = [];
+        setIsRecording(false);
+      } catch (error) {
+        console.error('녹음 중단 오류:', error);
+        setShowAlert('녹음 중단 중 오류가 발생했습니다.');
       }
-    } catch (error) {
-      console.error("fetchRecentAudio 중 오류 발생:", error);
-      setShowAlert("최근 음성 파일을 가져올 수 없습니다.");
     }
   };
   
-  const playAudioOnce = (audioUrl) => {
+  const sendAudioToServer = async () => {
+    if (!audioBlob) {
+        setShowAlert("녹음된 파일이 없습니다.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("audio", audioBlob, "recording.wav");
+
+    // FormData 내용 디버깅
+    for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]); // key, value 출력
+    }
+
+    try {
+        setIsProcessing(true);
+        const response = await axios.post(`${API_BASE_URL}/api/audio`, formData, {
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+                "Content-Type": "multipart/form-data", // 필수 헤더 설정
+            },
+        });
+
+        if (response.status === 200) {
+            const identifier = response.data.identifier;
+            setAudioIdentifier(identifier);
+            setShowAlert("녹음이 업로드되었습니다.");
+            setIsAudioPlayerVisible(true);
+            fetchAudioInfo(identifier);
+        }
+    } catch (error) {
+        console.error("오디오 업로드 중 오류 발생:", error);
+        setShowAlert("오디오 업로드 중 문제가 발생했습니다.");
+    } finally {
+        setIsProcessing(false);
+    }
+};
+
+  const fetchAudioInfo = async (identifier) => {
+    try {
+        // identifier를 통해 서버에서 직접 파일 정보를 가져옴
+        const response = await axios.get(`${API_BASE_URL}/api/audio/${identifier}`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+        });
+
+        if (response.status === 200) {
+            console.log("API 응답 데이터:", response.data);
+
+            // identifier를 기반으로 파일 서빙 URL 생성
+            setRecentAudioUrl(`${API_BASE_URL}/api/file/${identifier}`);
+            setRecentAudioFilename(response.data.original_filepath); // 필요 시 파일명 사용
+        } else {
+            console.error("서버 응답 실패:", response);
+            setShowAlert("오디오 정보를 가져오는데 실패했습니다.");
+        }
+    } catch (error) {
+        console.error("오디오 정보를 가져오는 중 오류 발생:", error);
+        setShowAlert("오디오 정보를 가져오는 중 오류가 발생했습니다.");
+    }
+};
+
+
+  const handlePlayTTS = (audioUrl) => {
     if (!audioUrl) {
       setShowAlert('재생할 파일이 없습니다.');
       return;
     }
-  
-    const fullAudioUrl = `${API_BASE_URL}${audioUrl}`;
-    console.log("재생할 오디오 URL:", fullAudioUrl);
-  
-    const audio = new Audio(fullAudioUrl);
-    audio.play().catch((error) => {
-      console.error('Audio playback error:', error);
-      setShowAlert('오디오 재생 중 문제가 발생했습니다.');
-    });
-  
-    audio.onended = () => {
-      setShowAlert('재생이 완료되었습니다.');
-    };
-  };  
-
-  const getAudioByIdentifier = async (identifier) => {
-    const token = authToken || sessionStorage.getItem("authToken");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/audio/${identifier}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      if (response.status === 200) {
-        const { processed_filepath } = response.data;
-        setProcessedAudio(processed_filepath);
-        setIsConverted(true);
-        setShowAlert("오디오를 성공적으로 가져왔습니다.");
-      }
-    } catch (error) {
-      console.error("오류 발생:", error);
-      setShowAlert("오류가 발생했습니다. 다시 시도해주세요.");
-    }
-  };
-  const playRecentAudio = () => {
-    if (recentAudio) {
-      const audio = new Audio(recentAudio);
-      audio.play().catch((error) => {
-        console.error("Audio playback error:", error);
-        setShowAlert("오디오 재생 중 문제가 발생했습니다.");
-      });
-  
-      // Hide play button after playback starts
-      setIsPlayButtonVisible(false);
-    }
-  };
-
-  const sendAudioToServer = async (audioBlob) => {
-    if (!audioBlob || !(audioBlob instanceof Blob)) {
-      console.error("audioBlob이 유효하지 않습니다:", audioBlob);
-      setShowAlert("음성 데이터가 올바르지 않습니다. 다시 시도해주세요.");
-      return;
-    }
-  
-    const token = authToken || localStorage.getItem("authToken");
-    if (!token) {
-      setShowAlert("인증 토큰이 없습니다. 로그인 후 시도해주세요.");
-      navigate("/login");
-      return;
-    }
-  
-    const formData = new FormData();
-    formData.append("audio", audioBlob, "voice_sample.wav");
-  
-    try {
-      setIsProcessing(true);
-      const response = await axios.post(`${API_BASE_URL}/api/audio`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      if (response.status === 200) {
-        const { processed_filepath } = response.data;
-        setProcessedAudio(processed_filepath);
-        setShowAlert("오디오 처리가 완료되었습니다.");
-      }
-    } catch (error) {
-      console.error("오류 발생:", error);
-      setShowAlert("오디오 처리 중 문제가 발생했습니다.");
-    } finally {
-      setIsProcessing(false);
-    }
-  };  
-
-  const handlePlayTTS = (audioUrl) => {
-    if (!isConverted) {
-      setShowAlert('먼저 변환하기 버튼을 눌러주세요.');
-      return;
-    }
-    const ttsAudio = new Audio(audioUrl);
-    setIsPlaying(true);
-    ttsAudio.play();
-    ttsAudio.onended = () => setIsPlaying(false);
-  };
-
-  const handleCopyText = async () => {
-    if (finalText) {
-      try {
-        await navigator.clipboard.writeText(finalText);
-        alert('텍스트가 복사되었습니다.');
-      } catch (error) {
-        alert('텍스트 복사에 실패했습니다. 다시 시도해주세요.');
-      }
-    }
+    const audio = new Audio(audioUrl);
+    audio.play().catch(() => setShowAlert('오디오 재생 중 문제가 발생했습니다.'));
   };
 
   const togglePrivacyPolicy = () => {
     setIsPrivacyPolicyOpen(!isPrivacyPolicyOpen);
   };
 
-  const handleOverlayClick = (e) => {
-    if (e.target.classList.contains('privacy-policy-modal-overlay')) {
-      setIsPrivacyPolicyOpen(false);
+  const handleCopyText = async () => {
+    if (inputText) {
+      try {
+        await navigator.clipboard.writeText(inputText);
+        setShowAlert('텍스트가 복사되었습니다.');
+      } catch (error) {
+        setShowAlert('텍스트 복사에 실패했습니다.');
+      }
     }
   };
-
+  const playAudio = () => {
+    if (!recentAudioUrl) {
+      setShowAlert('재생할 파일이 없습니다.');
+      return;
+    }
+  
+    const audio = new Audio(recentAudioUrl);
+    audio.play()
+      .then(() => {
+        setShowAlert('오디오 재생 중입니다.');
+      })
+      .catch((error) => {
+        console.error('오디오 재생 중 오류 발생:', error);
+        setShowAlert('오디오 재생 중 문제가 발생했습니다.');
+      });
+  };  
+  
   return (
     <div className="ear-talk-container">
       <Header />
@@ -369,25 +316,18 @@ const Default = () => {
         )}
 
 {isAudioPlayerVisible && (
-  <div className="audio-player-modal">
-    <h3>{recentAudioFilename ? `파일명: ${recentAudioFilename}` : "녹음이 완료되었습니다."}</h3>
-    {isPlayButtonVisible ? (
-      <button
-        onClick={() => {
-          playRecentAudio();
-        }}
-        className="play-button"
-      >
-        재생하기
-      </button>
-    ) : (
-      <audio controls src={`${API_BASE_URL}${recentAudio}`}></audio>
-    )}
-    <button className="close-button" onClick={() => setIsAudioPlayerVisible(false)}>
-      닫기
-    </button>
-  </div>
+    <div className="audio-player-modal">
+        <h3>{recentAudioFilename ? `파일명: ${recentAudioFilename}` : "녹음이 완료되었습니다."}</h3>
+        <audio controls>
+            <source src={recentAudioUrl} type="audio/wav" />
+            브라우저가 오디오 태그를 지원하지 않습니다.
+        </audio>
+        <button className="close-button" onClick={() => setIsAudioPlayerVisible(false)}>
+            닫기
+        </button>
+    </div>
 )}
+
 
         <div className={`icon-container ${isAuthenticated ? 'logged-in' : ''}`}>
           <button className="icon-button" onClick={handleCopyText}>
