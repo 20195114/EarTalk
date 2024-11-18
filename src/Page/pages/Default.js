@@ -294,27 +294,27 @@ const Default = () => {
     }
 };
 
-  const fetchAudioInfo = async (identifier) => {
-    try {
-        // identifier를 통해 서버에서 직접 파일 정보를 가져옴
-        const response = await axios.get(`${API_BASE_URL}/api/audio/${identifier}`, {
-            headers: { Authorization: `Bearer ${authToken}` },
-        });
+const fetchAudioInfo = async (identifier) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/audio/${identifier}`, {
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
 
-        if (response.status === 200) {
-            console.log("API 응답 데이터:", response.data);
+    if (response.status === 200) {
+      console.log("API 응답 데이터:", response.data);
 
-            // identifier를 기반으로 파일 서빙 URL 생성
-            setRecentAudioUrl(`${API_BASE_URL}/api/file/${identifier}`);
-            setRecentAudioFilename(response.data.original_filepath); // 필요 시 파일명 사용
-        } else {
-            console.error("서버 응답 실패:", response);
-            setShowAlert("오디오 정보를 가져오는데 실패했습니다.");
-        }
-    } catch (error) {
-        console.error("오디오 정보를 가져오는 중 오류 발생:", error);
-        setShowAlert("오디오 정보를 가져오는 중 오류가 발생했습니다.");
+      // identifier를 기반으로 파일 URL 설정
+      const audioUrl = `${API_BASE_URL}/api/file/${identifier}`;
+      setRecentAudioUrl(audioUrl);
+      console.log("재생할 오디오 URL:", audioUrl); // 여기에서 확인
+    } else {
+      console.error("서버 응답 실패:", response);
+      setShowAlert("오디오 정보를 가져오는데 실패했습니다.");
     }
+  } catch (error) {
+    console.error("오디오 정보를 가져오는 중 오류 발생:", error);
+    setShowAlert("오디오 정보를 가져오는 중 오류가 발생했습니다.");
+  }
 };
 
 
@@ -346,6 +346,8 @@ const Default = () => {
       setShowAlert('재생할 파일이 없습니다.');
       return;
     }
+  
+    console.log("재생할 오디오 URL:", recentAudioUrl); // 여기에서 확인
   
     const audio = new Audio(recentAudioUrl);
     audio.play()
@@ -416,7 +418,8 @@ const Default = () => {
             controls
             onLoadedData={() => console.log("오디오 로드 완료")} // 디버깅용
             onError={(e) => {
-              console.error("오디오 로드 오류:", e.target.error);
+              const error = e.target.error;
+              console.error("오디오 로드 오류 코드:", error?.code, error?.message || "알 수 없는 오류");
               setShowAlert("오디오 파일 로드에 실패했습니다.");
           }}
         >
