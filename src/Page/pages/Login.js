@@ -35,7 +35,7 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-        sessionStorage.setItem('access_token', data.access_token); // sessionStorage에 저장
+        localStorage.setItem('access_token', data.access_token); 
         setAuthToken(data.access_token);
         setIsAuthenticated(true);
         navigate('/'); // 로그인 후 메인 페이지로 이동

@@ -373,7 +373,7 @@
     top: 12px;
     left: 30px;
     font-size: 16px;
-    width: 80px;
+    width: 85px;
     height: 45px;
   }
 
@@ -427,22 +427,22 @@
   .convert-button {
     top: 25px;
     left: 30px;
-    font-size: 16px;
-    width: 80px;
+    font-size: 14px;
+    width: 85px;
     height: 40px;
   }
 
   .convert-button.logged-in {
     top: 10px;
     left: 20px;
-    font-size: 16px;
-    width: 80px;
+    font-size: 14px;
+    width: 85px;
     height: 40px;
   }
 
   .record-button {
     width: 60px;
-    height: 70px;
+    height: 72px;
     font-size: 24px;
     top: 0px;
   }
@@ -464,7 +464,7 @@
   }
 
   .icon-button {
-    font-size: 20px;
+    font-size: 23px;
   }
 
   /* 여기는 페이크 코드 */

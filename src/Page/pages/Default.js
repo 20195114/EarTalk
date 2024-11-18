@@ -265,19 +265,15 @@ const Default = () => {
     const formData = new FormData();
     formData.append("audio", audioBlob, "recording.wav");
 
-    // FormData 내용 디버깅
-    for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]); // key, value 출력
-    }
-
     try {
         setIsProcessing(true);
-        const response = await axios.post(`${API_BASE_URL}/api/audio`, formData, {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-                "Content-Type": "multipart/form-data", // 필수 헤더 설정
-            },
-        });
+
+        // 헤더를 로그인 여부에 따라 설정
+        const headers = isAuthenticated
+            ? { Authorization: `Bearer ${authToken}`, "Content-Type": "multipart/form-data" }
+            : { "Content-Type": "multipart/form-data" }; // 비로그인 시 Authorization 제거
+
+        const response = await axios.post(`${API_BASE_URL}/api/audio`, formData, { headers });
 
         if (response.status === 200) {
             const identifier = response.data.identifier;
@@ -295,26 +291,29 @@ const Default = () => {
 };
 
 const fetchAudioInfo = async (identifier) => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/api/audio/${identifier}`, {
-      headers: { Authorization: `Bearer ${authToken}` },
-    });
+    try {
+        // 로그인 여부에 따라 헤더 설정
+        const headers = isAuthenticated
+            ? { Authorization: `Bearer ${authToken}` }
+            : {};
 
-    if (response.status === 200) {
-      console.log("API 응답 데이터:", response.data);
+        const response = await axios.get(`${API_BASE_URL}/api/audio/${identifier}`, { headers });
 
-      // identifier를 기반으로 파일 URL 설정
-      const audioUrl = `${API_BASE_URL}/api/file/${identifier}`;
-      setRecentAudioUrl(audioUrl);
-      console.log("재생할 오디오 URL:", audioUrl); // 여기에서 확인
-    } else {
-      console.error("서버 응답 실패:", response);
-      setShowAlert("오디오 정보를 가져오는데 실패했습니다.");
+        if (response.status === 200) {
+            console.log("API 응답 데이터:", response.data);
+
+            // identifier를 기반으로 파일 URL 설정
+            const audioUrl = `${API_BASE_URL}/api/file/${identifier}`;
+            setRecentAudioUrl(audioUrl);
+            console.log("재생할 오디오 URL:", audioUrl); // 디버깅용
+        } else {
+            console.error("서버 응답 실패:", response);
+            setShowAlert("오디오 정보를 가져오는데 실패했습니다.");
+        }
+    } catch (error) {
+        console.error("오디오 정보를 가져오는 중 오류 발생:", error);
+        setShowAlert("오디오 정보를 가져오는 중 오류가 발생했습니다.");
     }
-  } catch (error) {
-    console.error("오디오 정보를 가져오는 중 오류 발생:", error);
-    setShowAlert("오디오 정보를 가져오는 중 오류가 발생했습니다.");
-  }
 };
 
 
