@@ -23,9 +23,9 @@ const Record = () => {
     }
 
     const fetchAudioFiles = async () => {
-      setIsLoading(true); // 로딩 상태 시작
-      setErrorMessage(null); // 이전 에러 메시지 초기화
-      const token = authToken || localStorage.getItem("authToken"); // 로컬 스토리지에서 토큰 가져오기
+      setIsLoading(true);
+      setErrorMessage(null);
+      const token = authToken || localStorage.getItem("authToken");
       console.log("API 요청에 사용될 토큰:", token);
 
       try {
@@ -51,21 +51,25 @@ const Record = () => {
         console.log("서버에서 받은 데이터:", data);
 
         if (data && data.data) {
-          const files = data.data.map((file) => ({
-            name: file.original_filepath.split('/').pop(), // 파일명만 표시
-            text: file.text || "텍스트가 없습니다.",
-            date: file.created_at
-              ? new Date(file.created_at).toLocaleDateString("ko-KR", {
+          const files = await Promise.all(
+            data.data.map(async (file) => {
+              // identifier로 추가 API 호출
+              const fileDetails = await fetchFileDetails(file.identifier, token);
+              return {
+                name: fileDetails?.name || file.original_filepath.split('/').pop(),
+                text: fileDetails?.text || file.text || "텍스트가 없습니다.",
+                date: fileDetails?.date || new Date(file.created_at).toLocaleDateString("ko-KR", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
-                })
-              : "날짜 없음",
-            url: `${API_BASE_URL}${file.processed_filepath}`, // 절대 URL로 변환
-          }));
+                }),
+                url: fileDetails?.url || `${API_BASE_URL}${file.processed_filepath}`,
+              };
+            })
+          );
           setWavFiles(files);
-          setVisibleFiles(files.slice(0, 8)); // 첫 8개 파일만 표시
-          if (files.length <= 8) setShowMore(false); // 더보기 버튼 숨김
+          setVisibleFiles(files.slice(0, 8));
+          if (files.length <= 8) setShowMore(false);
         } else {
           setErrorMessage("오디오 파일을 불러올 수 없습니다.");
         }
@@ -73,12 +77,47 @@ const Record = () => {
         console.error("API 요청 중 오류 발생:", error);
         setErrorMessage("오디오 파일을 불러오는 중 문제가 발생했습니다.");
       } finally {
-        setIsLoading(false); // 로딩 상태 종료
+        setIsLoading(false);
       }
     };
 
     fetchAudioFiles();
   }, [isAuthenticated, authToken, navigate, API_BASE_URL]);
+
+  const fetchFileDetails = async (identifier, token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/file/${identifier}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json", // JSON 대신 바이너리 데이터 요청
+        },
+      });
+  
+      if (!response.ok) {
+        console.error(`파일 세부정보를 불러오는 중 오류 발생: ${response.status}`);
+        return null;
+      }
+  
+      // 바이너리 데이터 처리 (URL 생성)
+      const blob = await response.blob();
+      const fileUrl = URL.createObjectURL(blob);
+  
+      return {
+        name: `${identifier}.wav`, // 파일명은 identifier 기반으로 생성
+        text: "텍스트가 없습니다.", // 추가 정보는 없으므로 기본값 설정
+        date: new Date().toLocaleDateString("ko-KR", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        url: fileUrl, // 생성한 Blob URL
+      };
+    } catch (error) {
+      console.error("파일 세부정보 요청 중 오류:", error);
+      return null;
+    }
+  };  
 
   const handleShowMore = () => {
     const nextFiles = wavFiles.slice(visibleFiles.length, visibleFiles.length + 8);
@@ -94,12 +133,10 @@ const Record = () => {
   };
 
   const handleAudioPlay = (audioElement) => {
-    // 이전에 재생 중인 오디오가 있으면 중지
     if (currentAudioRef.current && currentAudioRef.current !== audioElement) {
       currentAudioRef.current.pause();
       currentAudioRef.current.currentTime = 0;
     }
-    // 새로운 오디오를 현재 재생 중인 오디오로 설정
     currentAudioRef.current = audioElement;
 
     audioElement
@@ -137,7 +174,7 @@ const Record = () => {
               <audio
                 controls
                 src={file.url}
-                onPlay={(e) => handleAudioPlay(e.target)} // 오디오 재생 이벤트 핸들링
+                onPlay={(e) => handleAudioPlay(e.target)}
               >
                 Your browser does not support the audio element.
               </audio>
